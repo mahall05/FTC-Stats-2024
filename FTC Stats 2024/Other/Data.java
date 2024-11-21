@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.apache.poi.hwpf.usermodel.DateAndTime;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -14,14 +15,25 @@ import Core.Utilities;
 public class Data {
     private XSSFSheet sheet;
     private ArrayList<Entry> entries;
+    private Date date;
 
     public Data(XSSFWorkbook wb){
         sheet = wb.getSheet("Data");
         entries = new ArrayList<Entry>();
+        date = new Date();
 
         getEntries();
         printEntries();
         printData();
+        calcWeight(entries.get(0));
+    }
+
+    private double calcWeight(Entry e){
+        long millisecondsBetween = Math.abs(date.getTime() - e.getDate().getTime());
+        double daysBetween = millisecondsBetween/ (24.0 * 60.0 * 60.0 * 1000.0) - 1;
+        
+        double weight = Math.pow(1.07, -daysBetween);
+        return weight;
     }
 
     private double calcMean(Function<Entry, Integer> f){
@@ -31,8 +43,8 @@ public class Data {
         for(Entry e : entries){
             double val = f.apply(e);
             if(val>=0){
-                sum+=val;
-                numValues++;
+                sum+=val * calcWeight(e);
+                numValues += calcWeight(e);
             }
         }
         double mean = sum/numValues;
@@ -50,8 +62,8 @@ public class Data {
             if(val>=0){
                 double deviation = Math.abs(val-mean);
                 double sqrDev = deviation*deviation;
-                sqrDevSum += sqrDev;
-                numValues++;
+                sqrDevSum += sqrDev * calcWeight(e);
+                numValues += calcWeight(e);
             }
         }
 
