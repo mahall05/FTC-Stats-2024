@@ -1,0 +1,8 @@
+{
+    "java.project.sourcePaths": [
+        "."
+    ],
+    "java.project.referencedLibraries": [
+        "c:\\Users\\matth\\Documents\\Java\\Common Libraries\\poi-ooxml-5.2.3.jar"
+    ]
+}
