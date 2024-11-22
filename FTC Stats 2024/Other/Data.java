@@ -175,6 +175,41 @@ public class Data {
         private String teleopStrategy;
         private String matchType;
 
+        public static Function<Entry, Integer> getData(int data){
+            switch(data){
+                case (0):
+                    return Entry::getEntryNet;
+                case (1):
+                    return Entry::getEntryLowBasket;
+                case (2):
+                    return Entry::getEntryHighBasket;
+                case (3):
+                    return Entry::getEntryLowChamber;
+                case (4):
+                    return Entry::getEntryHighChamber;
+                case (5):
+                    return Entry::getEntryEndgamePoints;
+                case (6):
+                    return Entry::getEntryAutoPoints;
+                case (7):
+                    return Entry::getEntryTotalPoints;
+                case (8):
+                    return Entry::getEntryTeleopPoints;
+                case (9):
+                    return Entry::getEntryPiecesScored;
+                case (10):
+                    return Entry::getEntryAutoSamplesScored;
+                case (11):
+                    return Entry::getEntryAutoSpecimensScored;
+                case (12):
+                    return Entry::getEntryTeleopSamplesScored;
+                case (13):
+                    return Entry::getEntryTeleopSpecimensScored;
+                default:
+                    return null;
+            }
+        }
+
         private void calcPieces(){
             double points = autoPoints;
             if(points % 2 != 0){

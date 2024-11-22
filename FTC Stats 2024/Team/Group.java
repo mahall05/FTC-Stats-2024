@@ -12,6 +12,8 @@ public class Group{
     protected ArrayList<Data.Entry> entries;
     protected Data data;
 
+    // Net, Low Basket, High Basket, Low Chamber, High Chamber, Endgame, Auto Points, Total Points, Teleop Points, Pieces Scored, Auto Samples, Auto Specimens, Teleop Samples, Teleop Specimens
+
     protected double[] net;
     protected double[] lowBasket;
     protected double[] highBasket;
