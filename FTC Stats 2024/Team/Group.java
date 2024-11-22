@@ -1,6 +1,7 @@
 package Team;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -49,6 +50,19 @@ public class Group{
         autoSpecimensScored = new double[] {Data.calcMean(entries, Data.Entry::getEntryAutoSpecimensScored), Data.calcStdDev(entries, Data.Entry::getEntryAutoSpecimensScored)};
         teleopSamplesScored = new double[] {Data.calcMean(entries, Data.Entry::getEntryTeleopSamplesScored), Data.calcStdDev(entries, Data.Entry::getEntryTeleopSamplesScored)};
         teleopSpecimensScored = new double[] {Data.calcMean(entries, Data.Entry::getEntryTeleopSpecimensScored), Data.calcStdDev(entries, Data.Entry::getEntryTeleopSpecimensScored)};
+    }
+
+    private void calcComparisonData(){
+        double[] numbers = new double[members.length*2];
+        for(int i = 0; i < numbers.length; i+=2){
+            numbers[i] = members[i/2]
+        }
+
+        Map<Integer, ArrayList<Double>> dataMap = new HashMap<Integer, ArrayList<Double>>();
+        for(int i = 0; i <= 13 ; i++){
+            dataMap.put(0, Utilities.arrayToList(new double[]))//idk
+        }
+        
     }
 
     public TeamMember[] getMembers(){
