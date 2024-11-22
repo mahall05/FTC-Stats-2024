@@ -76,7 +76,7 @@ public class Data {
     }
 
     // Format
-    // Date, Drive, Specials, Human, Coach, Net, Low Basket, High Basket, Low Chamber, High Chamber, Endgame, Auto Points, Total Points, Pieces Scored
+    // Date, Drive, Specials, Human, Coach, Net, Low Basket, High Basket, Low Chamber, High Chamber, Endgame, Auto Points, Total Points, Pieces Scored, Auto Ran, Teleop Strategy, Match Type
     private void retrieveEntries(){
         for(int i = 1; i <= sheet.getLastRowNum(); i++){
             if(sheet.getRow(i)!=null){
@@ -95,7 +95,11 @@ public class Data {
                                         row.getCell(10)==null?-1: (int) row.getCell(10).getNumericCellValue(), 
                                         row.getCell(11)==null?-1: (int) row.getCell(11).getNumericCellValue(), 
                                         row.getCell(12)==null?-1: (int) row.getCell(12).getNumericCellValue(), 
-                                        row.getCell(13)==null?-1: (int) row.getCell(13).getNumericCellValue()));
+                                        row.getCell(13)==null?-1: (int) row.getCell(13).getNumericCellValue(),
+                                        row.getCell(14)==null?-1: (int) row.getCell(14).getNumericCellValue(),
+                                        row.getCell(15)==null?null: row.getCell(15).getStringCellValue(),
+                                        row.getCell(16)==null?null: row.getCell(16).getStringCellValue()
+                                    ));
             }
         }
     }
@@ -167,6 +171,10 @@ public class Data {
         private int teleopSpecimensScored;
         private int teleopPoints;
 
+        private int autoRan;
+        private String teleopStrategy;
+        private String matchType;
+
         private void calcPieces(){
             double points = autoPoints;
             if(points % 2 != 0){
@@ -183,6 +191,15 @@ public class Data {
         }
 
 
+        public static int getEntryAutoRan(Entry e){
+            return e.getAutoRan();
+        }
+        public static String getEntryTeleopStrategy(Entry e){
+            return e.getTeleopStrategy();
+        }
+        public static String getEntryMatchType(Entry e){
+            return e.getMatchType();
+        }
         public static int getEntryAutoSamplesScored(Entry e){
             return e.getAutoSamplesScored();
         }
@@ -226,7 +243,7 @@ public class Data {
             return e.getPiecesScored();
         }
 
-        public Entry(Date date, String driver, String specialist, String human, String coach, int net, int lowBasket, int highBasket, int lowChamber, int highChamber, int endgamePoints, int autoPoints, int totalPoints, int piecesScored){
+        public Entry(Date date, String driver, String specialist, String human, String coach, int net, int lowBasket, int highBasket, int lowChamber, int highChamber, int endgamePoints, int autoPoints, int totalPoints, int piecesScored, int autoRan, String teleopStrategy, String matchType){
             this.date=date;
             this.driver=driver;
             this.specialist=specialist;
@@ -241,6 +258,9 @@ public class Data {
             this.autoPoints=autoPoints;
             this.totalPoints=totalPoints;
             this.piecesScored=piecesScored;
+            this.autoRan=autoRan;
+            this.teleopStrategy=teleopStrategy;
+            this.matchType=matchType;
 
             calcPieces();
         }
@@ -264,6 +284,9 @@ public class Data {
         public int getTeleopSamplesScored(){return teleopSamplesScored;}
         public int getTeleopSpecimensScored(){return teleopSpecimensScored;}
         public int getTeleopPoints(){return teleopPoints;}
+        public int getAutoRan(){return autoRan;}
+        public String getTeleopStrategy(){return teleopStrategy;}
+        public String getMatchType(){return matchType;}
 
         public String toString(){
             return getDate() + " - " + getDriver() + " - " + getSpecialist() + " - " + getHuman() + " - " + getCoach() + " - " + getNet() + " - " + getLowBasket() + " - " + getHighBasket() + " - " + getLowChamber() + " - " + getHighChamber() + " - " + getEndgamePoints() + " - " + getAutoPoints() + " - " + getTotalPoints() + " - " + getPiecesScored();

@@ -48,21 +48,30 @@ public class Group{
         piecesScored = new double[] {Data.calcMean(entries, Data.Entry::getEntryPiecesScored), Data.calcStdDev(entries, Data.Entry::getEntryPiecesScored)};
         autoSamplesScored = new double[] {Data.calcMean(entries, Data.Entry::getEntryAutoSamplesScored), Data.calcStdDev(entries, Data.Entry::getEntryAutoSamplesScored)};
         autoSpecimensScored = new double[] {Data.calcMean(entries, Data.Entry::getEntryAutoSpecimensScored), Data.calcStdDev(entries, Data.Entry::getEntryAutoSpecimensScored)};
-        teleopSamplesScored = new double[] {Data.calcMean(entries, Data.Entry::getEntryTeleopSamplesScored), Data.calcStdDev(entries, Data.Entry::getEntryTeleopSamplesScored)};
-        teleopSpecimensScored = new double[] {Data.calcMean(entries, Data.Entry::getEntryTeleopSpecimensScored), Data.calcStdDev(entries, Data.Entry::getEntryTeleopSpecimensScored)};
+
+        ArrayList<Data.Entry> sampleMatches = new ArrayList<Data.Entry>();
+        ArrayList<Data.Entry> specimenMatches = new ArrayList<Data.Entry>();
+
+        for(Data.Entry e : entries){
+            if(e.getTeleopStrategy()!=null){
+                if(e.getTeleopStrategy().equals("Samples")){
+                    sampleMatches.add(e);
+                }else if(e.getTeleopStrategy().equals("Specimens")){
+                    specimenMatches.add(e);
+                }
+            }
+        }
+
+        teleopSamplesScored = new double[] {Data.calcMean(sampleMatches, Data.Entry::getEntryTeleopSamplesScored), Data.calcStdDev(sampleMatches, Data.Entry::getEntryTeleopSamplesScored)};
+        teleopSpecimensScored = new double[] {Data.calcMean(specimenMatches, Data.Entry::getEntryTeleopSpecimensScored), Data.calcStdDev(specimenMatches, Data.Entry::getEntryTeleopSpecimensScored)};
     }
 
     private void calcComparisonData(){
-        double[] numbers = new double[members.length*2];
-        for(int i = 0; i < numbers.length; i+=2){
-            numbers[i] = members[i/2]
-        }
+        ArrayList<Double> data = new ArrayList<Double>();
 
-        Map<Integer, ArrayList<Double>> dataMap = new HashMap<Integer, ArrayList<Double>>();
-        for(int i = 0; i <= 13 ; i++){
-            dataMap.put(0, Utilities.arrayToList(new double[]))//idk
-        }
-        
+        /*for(int i = 0; i < members.length; i++){
+            data.add(members[i].)
+        }*/
     }
 
     public TeamMember[] getMembers(){
