@@ -1,19 +1,25 @@
 package Team;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import Core.Utilities;
 import Other.Data;
 
 public class Group{
     protected TeamMember[] members;
     protected ArrayList<Data.Entry> entries;
     protected Data data;
+    protected XSSFWorkbook wb;
 
     // Net, Low Basket, High Basket, Low Chamber, High Chamber, Endgame, Auto Points, Total Points, Teleop Points, Pieces Scored, Auto Samples, Auto Specimens, Teleop Samples, Teleop Specimens
 
+    protected double[][] dataArray = new double[14][2];
+
+    /*
     protected double[] net;
     protected double[] lowBasket;
     protected double[] highBasket;
@@ -28,9 +34,11 @@ public class Group{
     protected double[] autoSpecimensScored;
     protected double[] teleopSamplesScored;
     protected double[] teleopSpecimensScored;
+    */
     
     public Group(Object[] members, XSSFWorkbook wb){
         this.members = new TeamMember[members.length];
+        this.wb=wb;
         data = new Data(wb);
         entries = data.getEntries();
 
@@ -38,18 +46,9 @@ public class Group{
             this.members[i] = (TeamMember) members[i];
         }
 
-        net = new double[] {Data.calcMean(entries, Data.Entry::getEntryNet), Data.calcStdDev(entries, Data.Entry::getEntryNet)};
-        lowBasket = new double[] {Data.calcMean(entries, Data.Entry::getEntryLowBasket), Data.calcStdDev(entries, Data.Entry::getEntryLowBasket)};
-        highBasket = new double[] {Data.calcMean(entries, Data.Entry::getEntryHighBasket), Data.calcStdDev(entries, Data.Entry::getEntryHighBasket)};
-        lowChamber = new double[] {Data.calcMean(entries, Data.Entry::getEntryLowChamber), Data.calcStdDev(entries, Data.Entry::getEntryLowChamber)};
-        highChamber = new double[] {Data.calcMean(entries, Data.Entry::getEntryHighChamber), Data.calcStdDev(entries, Data.Entry::getEntryHighChamber)};
-        endgamePoints = new double[] {Data.calcMean(entries, Data.Entry::getEntryEndgamePoints), Data.calcStdDev(entries, Data.Entry::getEntryEndgamePoints)};
-        autoPoints = new double[] {Data.calcMean(entries, Data.Entry::getEntryAutoPoints), Data.calcStdDev(entries, Data.Entry::getEntryAutoPoints)};
-        totalPoints = new double[] {Data.calcMean(entries, Data.Entry::getEntryTotalPoints), Data.calcStdDev(entries, Data.Entry::getEntryTotalPoints)};
-        teleopPoints = new double[] {Data.calcMean(entries, Data.Entry::getEntryTeleopPoints), Data.calcStdDev(entries, Data.Entry::getEntryTeleopPoints)};
-        piecesScored = new double[] {Data.calcMean(entries, Data.Entry::getEntryPiecesScored), Data.calcStdDev(entries, Data.Entry::getEntryPiecesScored)};
-        autoSamplesScored = new double[] {Data.calcMean(entries, Data.Entry::getEntryAutoSamplesScored), Data.calcStdDev(entries, Data.Entry::getEntryAutoSamplesScored)};
-        autoSpecimensScored = new double[] {Data.calcMean(entries, Data.Entry::getEntryAutoSpecimensScored), Data.calcStdDev(entries, Data.Entry::getEntryAutoSpecimensScored)};
+        for(int i = 0; i < dataArray.length-2; i++){
+            dataArray[i] = new double[] {Data.calcMean(entries, Data.Entry.getData(i)), Data.calcStdDev(entries, Data.Entry.getData(i))};
+        }
 
         ArrayList<Data.Entry> sampleMatches = new ArrayList<Data.Entry>();
         ArrayList<Data.Entry> specimenMatches = new ArrayList<Data.Entry>();
@@ -64,19 +63,39 @@ public class Group{
             }
         }
 
-        teleopSamplesScored = new double[] {Data.calcMean(sampleMatches, Data.Entry::getEntryTeleopSamplesScored), Data.calcStdDev(sampleMatches, Data.Entry::getEntryTeleopSamplesScored)};
-        teleopSpecimensScored = new double[] {Data.calcMean(specimenMatches, Data.Entry::getEntryTeleopSpecimensScored), Data.calcStdDev(specimenMatches, Data.Entry::getEntryTeleopSpecimensScored)};
+        dataArray[dataArray.length-2] = new double[] {Data.calcMean(sampleMatches, Data.Entry::getEntryTeleopSamplesScored), Data.calcStdDev(sampleMatches, Data.Entry::getEntryTeleopSamplesScored)};
+        dataArray[dataArray.length-1] = new double[] {Data.calcMean(specimenMatches, Data.Entry::getEntryTeleopSpecimensScored), Data.calcStdDev(specimenMatches, Data.Entry::getEntryTeleopSpecimensScored)};
     }
 
-    private void calcComparisonData(){
-        ArrayList<Double> data = new ArrayList<Double>();
+    public void calcComparisonData(String typeLabel, int type){
+        Map<Integer, ArrayList<Double>> dataMap = new HashMap<Integer, ArrayList<Double>>();
 
-        /*for(int i = 0; i < members.length; i++){
-            data.add(members[i].)
-        }*/
+        for(int i = 0; i < dataArray.length; i++){
+            ArrayList<Double> dataList = new ArrayList<Double>();
+
+            for(int j = 0; j < members.length; j++){
+                double memberAvg = members[j].getData()[i][type][0];
+                double teamAvg = dataArray[i][0];
+                double teamStdDev = dataArray[i][1];
+
+                dataList.add((memberAvg-teamAvg)/teamStdDev);
+                dataList.add(memberAvg-teamAvg);
+            }
+
+            dataMap.put(i, dataList);
+        }
+
+        Utilities.writeDatamapToSheet(3, Utilities.getSheetFromWorkbook(wb, typeLabel), dataMap);
     }
 
     public TeamMember[] getMembers(){
         return members;
+    }
+    public String[] getMemberNames(){
+        String[] names = new String[members.length];
+        for(int i = 0; i < members.length; i++){
+            names[i]=members[i].getName();
+        }
+        return names;
     }
 }

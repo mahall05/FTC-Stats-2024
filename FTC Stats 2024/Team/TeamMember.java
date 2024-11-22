@@ -28,23 +28,6 @@ public class TeamMember {
 
     protected double[][][] data = new double[14][4][2];
 
-    /*
-    protected double[][] net = new double[4][2];
-    protected double[][] lowBasket = new double[4][2];
-    protected double[][] highBasket = new double[4][2];
-    protected double[][] lowChamber = new double[4][2];
-    protected double[][] highChamber = new double[4][2];
-    protected double[][] endgamePoints = new double[4][2];
-    protected double[][] autoPoints = new double[4][2];
-    protected double[][] totalPoints = new double[4][2];
-    protected double[][] teleopPoints = new double[4][2];
-    protected double[][] piecesScored = new double[4][2];
-    protected double[][] autoSamplesScored = new double[4][2];
-    protected double[][] autoSpecimensScored = new double[4][2];
-    protected double[][] teleopSamplesScored = new double[4][2];
-    protected double[][] teleopSpecimensScored = new double[4][2];
-    */
-
     public TeamMember(String name, XSSFWorkbook wb){
         this.name=name;
         this.wb=wb;
@@ -78,43 +61,30 @@ public class TeamMember {
     public void addHumanMatch(Entry e){
         humanMatches.add(e);
     }
-
-    private void sort(ArrayList<Entry> parent, Consumer<Entry> sampleConsumer, Consumer<Entry> specimenConsumer){
-        for(Entry e : parent){
-            if(e.getTeleopStrategy()!=null){
-                if(e.getTeleopStrategy().equals("Samples")){
-                    sampleConsumer.accept(e);
-                }else if(e.getTeleopStrategy().equals("Specimens")){
-                    specimenConsumer.accept(e);
-                }
-            }
-        }
-    }
-
-    public void singleTypeData(int type){
-        for(int i = 0; i <= 11; i++){
-            data[i][type] = new double[] {Data.calcMean(matches.get(type), Entry.getData(i)), Data.calcStdDev(matches.get(type), Entry.getData(i))};
-        }
-
-        ArrayList<Entry> sampleMatches = new ArrayList<Entry>();
-        ArrayList<Entry> specimenMatches = new ArrayList<Entry>();
-        for(Entry e : matches.get(type)){
-            if(e.getTeleopStrategy()!=null){
-                if(e.getTeleopStrategy().equals("Samples")){
-                    sampleMatches.add(e);
-                }else if(e.getTeleopStrategy().equals("Specimens")){
-                    specimenMatches.add(e);
-                }
-            }
-        }
-
-        data[12][type] = new double[] {Data.calcMean(sampleMatches, Data.Entry::getEntryTeleopSamplesScored), Data.calcStdDev(sampleMatches, Data.Entry::getEntryTeleopSamplesScored)};
-        data[13][type] = new double[] {Data.calcMean(specimenMatches, Data.Entry::getEntryTeleopSpecimensScored), Data.calcStdDev(specimenMatches, Data.Entry::getEntryTeleopSpecimensScored)};
+    public double[][][] getData(){
+        return data;
     }
 
     public void calcData(){
-        for(int i = 0; i < 4; i++){
-            singleTypeData(i);
+        for(int j = 0; j < 4; j++){
+            for(int i = 0; i <= 11; i++){
+                data[i][j] = new double[] {Data.calcMean(matches.get(j), Entry.getData(i)), Data.calcStdDev(matches.get(j), Entry.getData(i))};
+            }
+    
+            ArrayList<Entry> sampleMatches = new ArrayList<Entry>();
+            ArrayList<Entry> specimenMatches = new ArrayList<Entry>();
+            for(Entry e : matches.get(j)){
+                if(e.getTeleopStrategy()!=null){
+                    if(e.getTeleopStrategy().equals("Samples")){
+                        sampleMatches.add(e);
+                    }else if(e.getTeleopStrategy().equals("Specimens")){
+                        specimenMatches.add(e);
+                    }
+                }
+            }
+    
+            data[12][j] = new double[] {Data.calcMean(sampleMatches, Data.Entry::getEntryTeleopSamplesScored), Data.calcStdDev(sampleMatches, Data.Entry::getEntryTeleopSamplesScored)};
+            data[13][j] = new double[] {Data.calcMean(specimenMatches, Data.Entry::getEntryTeleopSpecimensScored), Data.calcStdDev(specimenMatches, Data.Entry::getEntryTeleopSpecimensScored)};
         }
 
         Map<Integer, ArrayList<Double>> dataMap = new HashMap<Integer, ArrayList<Double>>();

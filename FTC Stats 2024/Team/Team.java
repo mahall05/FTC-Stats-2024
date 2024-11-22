@@ -28,10 +28,10 @@ public class Team extends Group{
         drivers.add(find(members, "Cas"));
         drivers.add(find(members, "Ben"));
         drivers.add(find(members, "Lucas"));
-        drivers.add(find(members, "Matt"));
         drivers.add(find(members, "Jillian"));
-        drivers.add(find(members, "Maddie"));
         drivers.add(find(members, "Keller"));
+        drivers.add(find(members, "Matt"));
+        drivers.add(find(members, "Maddie"));
 
         specialists.add(find(members, "Zoe"));
         specialists.add(find(members, "Max"));
@@ -80,25 +80,19 @@ public class Team extends Group{
         }
         
         Map<Integer, ArrayList<Double>> dataMap = new HashMap<Integer, ArrayList<Double>>();
-        dataMap.put(0, Utilities.arrayToList(net));
-        dataMap.put(1, Utilities.arrayToList(lowBasket));
-        dataMap.put(2, Utilities.arrayToList(highBasket));
-        dataMap.put(3, Utilities.arrayToList(lowChamber));
-        dataMap.put(4, Utilities.arrayToList(highChamber));
-        dataMap.put(5, Utilities.arrayToList(endgamePoints));
-        dataMap.put(6, Utilities.arrayToList(autoPoints));
-        dataMap.put(7, Utilities.arrayToList(totalPoints));
-        dataMap.put(8, Utilities.arrayToList(teleopPoints));
-        dataMap.put(9, Utilities.arrayToList(piecesScored));
-        dataMap.put(10, Utilities.arrayToList(autoSamplesScored));
-        dataMap.put(11, Utilities.arrayToList(autoSpecimensScored));
-        dataMap.put(12, Utilities.arrayToList(teleopSamplesScored));
-        dataMap.put(13, Utilities.arrayToList(teleopSpecimensScored));
+        for(int i = 0; i < dataArray.length; i++){
+            dataMap.put(i, Utilities.arrayToList(dataArray[i]));
+        }
         
         Utilities.writeDatamapToSheet(3, Utilities.getSheetFromWorkbook(wb, "Team"), dataMap);
         for(TeamMember m : members){
             m.calcData();
         }
+
+        this.drivers.calcComparisonData("Drivers", 0);
+        this.specialists.calcComparisonData("Specialists", 1);
+        this.coaches.calcComparisonData("Coaches", 2);
+        this.humans.calcComparisonData("Human Players", 3);
     }
 
     public TeamMember find(TeamMember[] list, String name){

@@ -3,3 +3,7 @@ Estimated points contribution based on average points - team average
 Std Devation
 
  + Make sure samples and specimens are only included for matches that that is what we played
+
+Weighted standard deviations!
+
+ How much of the variation in score can be explained by their contribution?
