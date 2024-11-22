@@ -9,6 +9,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import Core.Settings;
 import Core.Utilities;
+import Other.Data.Entry;
 import Other.Data;
 
 public class TeamMember {
@@ -16,100 +17,64 @@ public class TeamMember {
 
     private XSSFWorkbook wb;
 
-    private ArrayList<Data.Entry> driverMatches;
-    private ArrayList<Data.Entry> specialistMatches;
-    private ArrayList<Data.Entry> coachMatches;
-    private ArrayList<Data.Entry> humanMatches;
+    private ArrayList<Entry> driverMatches;
+    private ArrayList<Entry> specialistMatches;
+    private ArrayList<Entry> coachMatches;
+    private ArrayList<Entry> humanMatches;
 
-    protected double[] driverNet;
-    protected double[] driverLowBasket;
-    protected double[] driverHighBasket;
-    protected double[] driverLowChamber;
-    protected double[] driverHighChamber;
-    protected double[] driverEndgamePoints;
-    protected double[] driverAutoPoints;
-    protected double[] driverTotalPoints;
-    protected double[] driverTeleopPoints;
-    protected double[] driverPiecesScored;
-    protected double[] driverAutoSamplesScored;
-    protected double[] driverAutoSpecimensScored;
-    protected double[] driverTeleopSamplesScored;
-    protected double[] driverTeleopSpecimensScored;
+    private ArrayList<ArrayList<Entry>> matches;
 
-    protected double[] specialistNet;
-    protected double[] specialistLowBasket;
-    protected double[] specialistHighBasket;
-    protected double[] specialistLowChamber;
-    protected double[] specialistHighChamber;
-    protected double[] specialistEndgamePoints;
-    protected double[] specialistAutoPoints;
-    protected double[] specialistTotalPoints;
-    protected double[] specialistTeleopPoints;
-    protected double[] specialistPiecesScored;
-    protected double[] specialistAutoSamplesScored;
-    protected double[] specialistAutoSpecimensScored;
-    protected double[] specialistTeleopSamplesScored;
-    protected double[] specialistTeleopSpecimensScored;
-
-    protected double[] coachNet;
-    protected double[] coachLowBasket;
-    protected double[] coachHighBasket;
-    protected double[] coachLowChamber;
-    protected double[] coachHighChamber;
-    protected double[] coachEndgamePoints;
-    protected double[] coachAutoPoints;
-    protected double[] coachTotalPoints;
-    protected double[] coachTeleopPoints;
-    protected double[] coachPiecesScored;
-    protected double[] coachAutoSamplesScored;
-    protected double[] coachAutoSpecimensScored;
-    protected double[] coachTeleopSamplesScored;
-    protected double[] coachTeleopSpecimensScored;
-
-    protected double[] humanNet;
-    protected double[] humanLowBasket;
-    protected double[] humanHighBasket;
-    protected double[] humanLowChamber;
-    protected double[] humanHighChamber;
-    protected double[] humanEndgamePoints;
-    protected double[] humanAutoPoints;
-    protected double[] humanTotalPoints;
-    protected double[] humanTeleopPoints;
-    protected double[] humanPiecesScored;
-    protected double[] humanAutoSamplesScored;
-    protected double[] humanAutoSpecimensScored;
-    protected double[] humanTeleopSamplesScored;
-    protected double[] humanTeleopSpecimensScored;
+    protected double[][] net = new double[4][2];
+    protected double[][] lowBasket = new double[4][2];
+    protected double[][] highBasket = new double[4][2];
+    protected double[][] lowChamber = new double[4][2];
+    protected double[][] highChamber = new double[4][2];
+    protected double[][] endgamePoints = new double[4][2];
+    protected double[][] autoPoints = new double[4][2];
+    protected double[][] totalPoints = new double[4][2];
+    protected double[][] teleopPoints = new double[4][2];
+    protected double[][] piecesScored = new double[4][2];
+    protected double[][] autoSamplesScored = new double[4][2];
+    protected double[][] autoSpecimensScored = new double[4][2];
+    protected double[][] teleopSamplesScored = new double[4][2];
+    protected double[][] teleopSpecimensScored = new double[4][2];
 
     public TeamMember(String name, XSSFWorkbook wb){
         this.name=name;
         this.wb=wb;
 
-        driverMatches = new ArrayList<Data.Entry>();
-        specialistMatches = new ArrayList<Data.Entry>();
-        coachMatches = new ArrayList<Data.Entry>();
-        humanMatches = new ArrayList<Data.Entry>();
+        matches = new ArrayList<ArrayList<Entry>>();
+
+        driverMatches = new ArrayList<Entry>();
+        specialistMatches = new ArrayList<Entry>();
+        coachMatches = new ArrayList<Entry>();
+        humanMatches = new ArrayList<Entry>();
+
+        matches.add(driverMatches);
+        matches.add(specialistMatches);
+        matches.add(coachMatches);
+        matches.add(humanMatches);
     }
 
     public String getName(){
         return name;
     }
 
-    public void addDriverMatch(Data.Entry e){
+    public void addDriverMatch(Entry e){
         driverMatches.add(e);
     }
-    public void addSpecialistMatch(Data.Entry e){
+    public void addSpecialistMatch(Entry e){
         specialistMatches.add(e);
     }
-    public void addCoachMatch(Data.Entry e){
+    public void addCoachMatch(Entry e){
         coachMatches.add(e);
     }
-    public void addHumanMatch(Data.Entry e){
+    public void addHumanMatch(Entry e){
         humanMatches.add(e);
     }
 
-    private void sort(ArrayList<Data.Entry> parent, Consumer<Data.Entry> sampleConsumer, Consumer<Data.Entry> specimenConsumer){
-        for(Data.Entry e : parent){
+    private void sort(ArrayList<Entry> parent, Consumer<Entry> sampleConsumer, Consumer<Entry> specimenConsumer){
+        for(Entry e : parent){
             if(e.getTeleopStrategy()!=null){
                 if(e.getTeleopStrategy().equals("Samples")){
                     sampleConsumer.accept(e);
@@ -120,96 +85,56 @@ public class TeamMember {
         }
     }
 
+    public void singleTypeData(int type){
+        net[type] = new double[] {Data.calcMean(matches.get(type), Data.Entry::getEntryNet), Data.calcStdDev(matches.get(type), Data.Entry::getEntryNet)};
+        lowBasket[type] = new double[] {Data.calcMean(matches.get(type), Data.Entry::getEntryLowBasket), Data.calcStdDev(matches.get(type), Data.Entry::getEntryLowBasket)};
+        highBasket[type] = new double[] {Data.calcMean(matches.get(type), Data.Entry::getEntryHighBasket), Data.calcStdDev(matches.get(type), Data.Entry::getEntryHighBasket)};
+        lowChamber[type] = new double[] {Data.calcMean(matches.get(type), Data.Entry::getEntryLowChamber), Data.calcStdDev(matches.get(type), Data.Entry::getEntryLowChamber)};
+        highChamber[type] = new double[] {Data.calcMean(matches.get(type), Data.Entry::getEntryHighChamber), Data.calcStdDev(matches.get(type), Data.Entry::getEntryHighChamber)};
+        endgamePoints[type] = new double[] {Data.calcMean(matches.get(type), Data.Entry::getEntryEndgamePoints), Data.calcStdDev(matches.get(type), Data.Entry::getEntryEndgamePoints)};
+        autoPoints[type] = new double[] {Data.calcMean(matches.get(type), Data.Entry::getEntryAutoPoints), Data.calcStdDev(matches.get(type), Data.Entry::getEntryAutoPoints)};
+        totalPoints[type] = new double[] {Data.calcMean(matches.get(type), Data.Entry::getEntryTotalPoints), Data.calcStdDev(matches.get(type), Data.Entry::getEntryTotalPoints)};
+        teleopPoints[type] = new double[] {Data.calcMean(matches.get(type), Data.Entry::getEntryTeleopPoints), Data.calcStdDev(matches.get(type), Data.Entry::getEntryTeleopPoints)};
+        piecesScored[type] = new double[] {Data.calcMean(matches.get(type), Data.Entry::getEntryPiecesScored), Data.calcStdDev(matches.get(type), Data.Entry::getEntryPiecesScored)};
+        autoSamplesScored[type] = new double[] {Data.calcMean(matches.get(type), Data.Entry::getEntryAutoSamplesScored), Data.calcStdDev(matches.get(type), Data.Entry::getEntryAutoSamplesScored)};
+        autoSpecimensScored[type] = new double[] {Data.calcMean(matches.get(type), Data.Entry::getEntryAutoSpecimensScored), Data.calcStdDev(matches.get(type), Data.Entry::getEntryAutoSpecimensScored)};
+
+        ArrayList<Entry> sampleMatches = new ArrayList<Entry>();
+        ArrayList<Entry> specimenMatches = new ArrayList<Entry>();
+        for(Entry e : matches.get(type)){
+            if(e.getTeleopStrategy()!=null){
+                if(e.getTeleopStrategy().equals("Samples")){
+                    sampleMatches.add(e);
+                }else if(e.getTeleopStrategy().equals("Specimens")){
+                    specimenMatches.add(e);
+                }
+            }
+        }
+
+        teleopSamplesScored[type] = new double[] {Data.calcMean(sampleMatches, Data.Entry::getEntryTeleopSamplesScored), Data.calcStdDev(sampleMatches, Data.Entry::getEntryTeleopSamplesScored)};
+        teleopSpecimensScored[type] = new double[] {Data.calcMean(specimenMatches, Data.Entry::getEntryTeleopSpecimensScored), Data.calcStdDev(specimenMatches, Data.Entry::getEntryTeleopSpecimensScored)};
+    }
+
     public void calcData(){
-        ArrayList<Data.Entry> driverSampleMatches = new ArrayList<Data.Entry>();
-        ArrayList<Data.Entry> driverSpecimenMatches = new ArrayList<Data.Entry>();
-        ArrayList<Data.Entry> specialistSampleMatches = new ArrayList<Data.Entry>();
-        ArrayList<Data.Entry> specialistSpecimenMatches = new ArrayList<Data.Entry>();
-        ArrayList<Data.Entry> coachSampleMatches = new ArrayList<Data.Entry>();
-        ArrayList<Data.Entry> coachSpecimenMatches = new ArrayList<Data.Entry>();
-        ArrayList<Data.Entry> humanSampleMatches = new ArrayList<Data.Entry>();
-        ArrayList<Data.Entry> humanSpecimenMatches = new ArrayList<Data.Entry>();
-
-        sort(driverMatches, driverSampleMatches::add, driverSpecimenMatches::add);
-        sort(specialistMatches, specialistSampleMatches::add, specialistSpecimenMatches::add);
-        sort(coachMatches, coachSampleMatches::add, coachSpecimenMatches::add);
-        sort(humanMatches, humanSampleMatches::add, humanSpecimenMatches::add);
-
-        driverNet = new double[] {Data.calcMean(driverMatches, Data.Entry::getEntryNet), Data.calcStdDev(driverMatches, Data.Entry::getEntryNet)};
-        driverLowBasket = new double[] {Data.calcMean(driverMatches, Data.Entry::getEntryLowBasket), Data.calcStdDev(driverMatches, Data.Entry::getEntryLowBasket)};
-        driverHighBasket = new double[] {Data.calcMean(driverMatches, Data.Entry::getEntryHighBasket), Data.calcStdDev(driverMatches, Data.Entry::getEntryHighBasket)};
-        driverLowChamber = new double[] {Data.calcMean(driverMatches, Data.Entry::getEntryLowChamber), Data.calcStdDev(driverMatches, Data.Entry::getEntryLowChamber)};
-        driverHighChamber = new double[] {Data.calcMean(driverMatches, Data.Entry::getEntryHighChamber), Data.calcStdDev(driverMatches, Data.Entry::getEntryHighChamber)};
-        driverEndgamePoints = new double[] {Data.calcMean(driverMatches, Data.Entry::getEntryEndgamePoints), Data.calcStdDev(driverMatches, Data.Entry::getEntryEndgamePoints)};
-        driverAutoPoints = new double[] {Data.calcMean(driverMatches, Data.Entry::getEntryAutoPoints), Data.calcStdDev(driverMatches, Data.Entry::getEntryAutoPoints)};
-        driverTotalPoints = new double[] {Data.calcMean(driverMatches, Data.Entry::getEntryTotalPoints), Data.calcStdDev(driverMatches, Data.Entry::getEntryTotalPoints)};
-        driverTeleopPoints = new double[] {Data.calcMean(driverMatches, Data.Entry::getEntryTeleopPoints), Data.calcStdDev(driverMatches, Data.Entry::getEntryTeleopPoints)};
-        driverPiecesScored = new double[] {Data.calcMean(driverMatches, Data.Entry::getEntryPiecesScored), Data.calcStdDev(driverMatches, Data.Entry::getEntryPiecesScored)};
-        driverAutoSamplesScored = new double[] {Data.calcMean(driverMatches, Data.Entry::getEntryAutoSamplesScored), Data.calcStdDev(driverMatches, Data.Entry::getEntryAutoSamplesScored)};
-        driverAutoSpecimensScored = new double[] {Data.calcMean(driverMatches, Data.Entry::getEntryAutoSpecimensScored), Data.calcStdDev(driverMatches, Data.Entry::getEntryAutoSpecimensScored)};
-        driverTeleopSamplesScored = new double[] {Data.calcMean(driverSampleMatches, Data.Entry::getEntryTeleopSamplesScored), Data.calcStdDev(driverSampleMatches, Data.Entry::getEntryTeleopSamplesScored)};
-        driverTeleopSpecimensScored = new double[] {Data.calcMean(driverSpecimenMatches, Data.Entry::getEntryTeleopSpecimensScored), Data.calcStdDev(driverSpecimenMatches, Data.Entry::getEntryTeleopSpecimensScored)};
-
-        specialistNet = new double[] {Data.calcMean(specialistMatches, Data.Entry::getEntryNet), Data.calcStdDev(specialistMatches, Data.Entry::getEntryNet)};
-        specialistLowBasket = new double[] {Data.calcMean(specialistMatches, Data.Entry::getEntryLowBasket), Data.calcStdDev(specialistMatches, Data.Entry::getEntryLowBasket)};
-        specialistHighBasket = new double[] {Data.calcMean(specialistMatches, Data.Entry::getEntryHighBasket), Data.calcStdDev(specialistMatches, Data.Entry::getEntryHighBasket)};
-        specialistLowChamber = new double[] {Data.calcMean(specialistMatches, Data.Entry::getEntryLowChamber), Data.calcStdDev(specialistMatches, Data.Entry::getEntryLowChamber)};
-        specialistHighChamber = new double[] {Data.calcMean(specialistMatches, Data.Entry::getEntryHighChamber), Data.calcStdDev(specialistMatches, Data.Entry::getEntryHighChamber)};
-        specialistEndgamePoints = new double[] {Data.calcMean(specialistMatches, Data.Entry::getEntryEndgamePoints), Data.calcStdDev(specialistMatches, Data.Entry::getEntryEndgamePoints)};
-        specialistAutoPoints = new double[] {Data.calcMean(specialistMatches, Data.Entry::getEntryAutoPoints), Data.calcStdDev(specialistMatches, Data.Entry::getEntryAutoPoints)};
-        specialistTotalPoints = new double[] {Data.calcMean(specialistMatches, Data.Entry::getEntryTotalPoints), Data.calcStdDev(specialistMatches, Data.Entry::getEntryTotalPoints)};
-        specialistTeleopPoints = new double[] {Data.calcMean(specialistMatches, Data.Entry::getEntryTeleopPoints), Data.calcStdDev(specialistMatches, Data.Entry::getEntryTeleopPoints)};
-        specialistPiecesScored = new double[] {Data.calcMean(specialistMatches, Data.Entry::getEntryPiecesScored), Data.calcStdDev(specialistMatches, Data.Entry::getEntryPiecesScored)};
-        specialistAutoSamplesScored = new double[] {Data.calcMean(specialistMatches, Data.Entry::getEntryAutoSamplesScored), Data.calcStdDev(specialistMatches, Data.Entry::getEntryAutoSamplesScored)};
-        specialistAutoSpecimensScored = new double[] {Data.calcMean(specialistMatches, Data.Entry::getEntryAutoSpecimensScored), Data.calcStdDev(specialistMatches, Data.Entry::getEntryAutoSpecimensScored)};
-        specialistTeleopSamplesScored = new double[] {Data.calcMean(specialistSampleMatches, Data.Entry::getEntryTeleopSamplesScored), Data.calcStdDev(specialistSampleMatches, Data.Entry::getEntryTeleopSamplesScored)};
-        specialistTeleopSpecimensScored = new double[] {Data.calcMean(specialistSpecimenMatches, Data.Entry::getEntryTeleopSpecimensScored), Data.calcStdDev(specialistSpecimenMatches, Data.Entry::getEntryTeleopSpecimensScored)};
-
-        coachNet = new double[] {Data.calcMean(coachMatches, Data.Entry::getEntryNet), Data.calcStdDev(coachMatches, Data.Entry::getEntryNet)};
-        coachLowBasket = new double[] {Data.calcMean(coachMatches, Data.Entry::getEntryLowBasket), Data.calcStdDev(coachMatches, Data.Entry::getEntryLowBasket)};
-        coachHighBasket = new double[] {Data.calcMean(coachMatches, Data.Entry::getEntryHighBasket), Data.calcStdDev(coachMatches, Data.Entry::getEntryHighBasket)};
-        coachLowChamber = new double[] {Data.calcMean(coachMatches, Data.Entry::getEntryLowChamber), Data.calcStdDev(coachMatches, Data.Entry::getEntryLowChamber)};
-        coachHighChamber = new double[] {Data.calcMean(coachMatches, Data.Entry::getEntryHighChamber), Data.calcStdDev(coachMatches, Data.Entry::getEntryHighChamber)};
-        coachEndgamePoints = new double[] {Data.calcMean(coachMatches, Data.Entry::getEntryEndgamePoints), Data.calcStdDev(coachMatches, Data.Entry::getEntryEndgamePoints)};
-        coachAutoPoints = new double[] {Data.calcMean(coachMatches, Data.Entry::getEntryAutoPoints), Data.calcStdDev(coachMatches, Data.Entry::getEntryAutoPoints)};
-        coachTotalPoints = new double[] {Data.calcMean(coachMatches, Data.Entry::getEntryTotalPoints), Data.calcStdDev(coachMatches, Data.Entry::getEntryTotalPoints)};
-        coachTeleopPoints = new double[] {Data.calcMean(coachMatches, Data.Entry::getEntryTeleopPoints), Data.calcStdDev(coachMatches, Data.Entry::getEntryTeleopPoints)};
-        coachPiecesScored = new double[] {Data.calcMean(coachMatches, Data.Entry::getEntryPiecesScored), Data.calcStdDev(coachMatches, Data.Entry::getEntryPiecesScored)};
-        coachAutoSamplesScored = new double[] {Data.calcMean(coachMatches, Data.Entry::getEntryAutoSamplesScored), Data.calcStdDev(coachMatches, Data.Entry::getEntryAutoSamplesScored)};
-        coachAutoSpecimensScored = new double[] {Data.calcMean(coachMatches, Data.Entry::getEntryAutoSpecimensScored), Data.calcStdDev(coachMatches, Data.Entry::getEntryAutoSpecimensScored)};
-        coachTeleopSamplesScored = new double[] {Data.calcMean(coachSampleMatches, Data.Entry::getEntryTeleopSamplesScored), Data.calcStdDev(coachSampleMatches, Data.Entry::getEntryTeleopSamplesScored)};
-        coachTeleopSpecimensScored = new double[] {Data.calcMean(coachSpecimenMatches, Data.Entry::getEntryTeleopSpecimensScored), Data.calcStdDev(coachSpecimenMatches, Data.Entry::getEntryTeleopSpecimensScored)};
-
-        humanNet = new double[] {Data.calcMean(humanMatches, Data.Entry::getEntryNet), Data.calcStdDev(humanMatches, Data.Entry::getEntryNet)};
-        humanLowBasket = new double[] {Data.calcMean(humanMatches, Data.Entry::getEntryLowBasket), Data.calcStdDev(humanMatches, Data.Entry::getEntryLowBasket)};
-        humanHighBasket = new double[] {Data.calcMean(humanMatches, Data.Entry::getEntryHighBasket), Data.calcStdDev(humanMatches, Data.Entry::getEntryHighBasket)};
-        humanLowChamber = new double[] {Data.calcMean(humanMatches, Data.Entry::getEntryLowChamber), Data.calcStdDev(humanMatches, Data.Entry::getEntryLowChamber)};
-        humanHighChamber = new double[] {Data.calcMean(humanMatches, Data.Entry::getEntryHighChamber), Data.calcStdDev(humanMatches, Data.Entry::getEntryHighChamber)};
-        humanEndgamePoints = new double[] {Data.calcMean(humanMatches, Data.Entry::getEntryEndgamePoints), Data.calcStdDev(humanMatches, Data.Entry::getEntryEndgamePoints)};
-        humanAutoPoints = new double[] {Data.calcMean(humanMatches, Data.Entry::getEntryAutoPoints), Data.calcStdDev(humanMatches, Data.Entry::getEntryAutoPoints)};
-        humanTotalPoints = new double[] {Data.calcMean(humanMatches, Data.Entry::getEntryTotalPoints), Data.calcStdDev(humanMatches, Data.Entry::getEntryTotalPoints)};
-        humanTeleopPoints = new double[] {Data.calcMean(humanMatches, Data.Entry::getEntryTeleopPoints), Data.calcStdDev(humanMatches, Data.Entry::getEntryTeleopPoints)};
-        humanPiecesScored = new double[] {Data.calcMean(humanMatches, Data.Entry::getEntryPiecesScored), Data.calcStdDev(humanMatches, Data.Entry::getEntryPiecesScored)};
-        humanAutoSamplesScored = new double[] {Data.calcMean(humanMatches, Data.Entry::getEntryAutoSamplesScored), Data.calcStdDev(humanMatches, Data.Entry::getEntryAutoSamplesScored)};
-        humanAutoSpecimensScored = new double[] {Data.calcMean(humanMatches, Data.Entry::getEntryAutoSpecimensScored), Data.calcStdDev(humanMatches, Data.Entry::getEntryAutoSpecimensScored)};
-        humanTeleopSamplesScored = new double[] {Data.calcMean(humanSampleMatches, Data.Entry::getEntryTeleopSamplesScored), Data.calcStdDev(humanSampleMatches, Data.Entry::getEntryTeleopSamplesScored)};
-        humanTeleopSpecimensScored = new double[] {Data.calcMean(humanSpecimenMatches, Data.Entry::getEntryTeleopSpecimensScored), Data.calcStdDev(humanSpecimenMatches, Data.Entry::getEntryTeleopSpecimensScored)};
+        for(int i = 0; i < 4; i++){
+            singleTypeData(i);
+        }
 
         Map<Integer, ArrayList<Double>> dataMap = new HashMap<Integer, ArrayList<Double>>();
-        dataMap.put(0, Utilities.arrayToList(driverNet, specialistNet, coachNet, humanNet));
-        dataMap.put(1, Utilities.arrayToList(driverLowBasket, specialistLowBasket, coachLowBasket, humanLowBasket));
-        dataMap.put(2, Utilities.arrayToList(driverHighBasket, specialistHighBasket, coachHighBasket, humanHighBasket));
-        dataMap.put(3, Utilities.arrayToList(driverLowChamber, specialistLowChamber, coachLowChamber, humanLowChamber));
-        dataMap.put(4, Utilities.arrayToList(driverHighChamber, specialistHighChamber, coachHighChamber, humanHighChamber));
-        dataMap.put(5, Utilities.arrayToList(driverEndgamePoints, specialistEndgamePoints, coachEndgamePoints, humanEndgamePoints));
-        dataMap.put(6, Utilities.arrayToList(driverAutoPoints, specialistAutoPoints, coachAutoPoints, humanAutoPoints));
-        dataMap.put(7, Utilities.arrayToList(driverTotalPoints, specialistTotalPoints, coachTotalPoints, humanTotalPoints));
-        dataMap.put(8, Utilities.arrayToList(driverTeleopPoints, specialistTeleopPoints, coachTeleopPoints, humanTeleopPoints));
-        dataMap.put(9, Utilities.arrayToList(driverPiecesScored, specialistPiecesScored, coachPiecesScored, humanPiecesScored));
-        dataMap.put(10, Utilities.arrayToList(driverAutoSamplesScored, specialistAutoSamplesScored, coachAutoSamplesScored, humanAutoSamplesScored));
-        dataMap.put(11, Utilities.arrayToList(driverAutoSpecimensScored, specialistAutoSpecimensScored, coachAutoSpecimensScored, humanAutoSpecimensScored));
-        dataMap.put(12, Utilities.arrayToList(driverTeleopSamplesScored, specialistTeleopSamplesScored, coachTeleopSamplesScored, humanTeleopSamplesScored));
-        dataMap.put(13, Utilities.arrayToList(driverTeleopSpecimensScored, specialistTeleopSpecimensScored, coachTeleopSpecimensScored, humanTeleopSpecimensScored));
+        dataMap.put(0, Utilities.arrayToList(net));
+        dataMap.put(1, Utilities.arrayToList(lowBasket));
+        dataMap.put(2, Utilities.arrayToList(highBasket));
+        dataMap.put(3, Utilities.arrayToList(lowChamber));
+        dataMap.put(4, Utilities.arrayToList(highChamber));
+        dataMap.put(5, Utilities.arrayToList(endgamePoints));
+        dataMap.put(6, Utilities.arrayToList(autoPoints));
+        dataMap.put(7, Utilities.arrayToList(totalPoints));
+        dataMap.put(8, Utilities.arrayToList(teleopPoints));
+        dataMap.put(9, Utilities.arrayToList(piecesScored));
+        dataMap.put(10, Utilities.arrayToList(autoSamplesScored));
+        dataMap.put(11, Utilities.arrayToList(autoSpecimensScored));
+        dataMap.put(12, Utilities.arrayToList(teleopSamplesScored));
+        dataMap.put(13, Utilities.arrayToList(teleopSpecimensScored));
         
 
         Utilities.writeDatamapToSheet(3, Utilities.getSheetFromWorkbook(wb, name), dataMap);
