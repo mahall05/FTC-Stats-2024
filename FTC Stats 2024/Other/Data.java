@@ -36,6 +36,12 @@ public class Data {
         double daysBetween = millisecondsBetween/ (24.0 * 60.0 * 60.0 * 1000.0) - 1;
         
         double weight = Math.pow(1.07, -daysBetween);
+
+        if(e.getMatchType().equals("Comp")){
+            weight*=1.0;
+        }else{
+            weight*=0.5;
+        }
         return weight;
     }
 
