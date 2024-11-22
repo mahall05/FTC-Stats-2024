@@ -15,7 +15,7 @@ import Core.Utilities;
 public class Data {
     private XSSFSheet sheet;
     private ArrayList<Entry> entries;
-    private Date date;
+    private static Date date;
 
     public Data(XSSFWorkbook wb){
         sheet = wb.getSheet("Data");
@@ -31,7 +31,7 @@ public class Data {
         return entries;
     }
 
-    private double calcWeight(Entry e){
+    public static double calcWeight(Entry e){
         long millisecondsBetween = Math.abs(date.getTime() - e.getDate().getTime());
         double daysBetween = millisecondsBetween/ (24.0 * 60.0 * 60.0 * 1000.0) - 1;
         
@@ -39,7 +39,7 @@ public class Data {
         return weight;
     }
 
-    private double calcMean(ArrayList<Entry> es, Function<Entry, Integer> f){
+    public static double calcMean(ArrayList<Entry> es, Function<Entry, Integer> f){
         double sum = 0;
         double numValues = 0;
 
@@ -54,7 +54,7 @@ public class Data {
         return mean;
     }
 
-    private double calcStdDev(ArrayList<Entry> es, Function<Entry, Integer> f){
+    public static double calcStdDev(ArrayList<Entry> es, Function<Entry, Integer> f){
         double mean = calcMean(es, f);
 
         double sqrDevSum = 0;
@@ -106,6 +106,7 @@ public class Data {
         }
     }
 
+    /*
     private void printData(){
         System.out.println("\nNet:");
         System.out.println("Mean: " + calcMean(Entry::getEntryNet));
@@ -142,7 +143,7 @@ public class Data {
         System.out.println("\nPieces Scored:");
         System.out.println("Mean: " + calcMean(Entry::getEntryPiecesScored));
         System.out.println("Std Dev: " + calcStdDev(Entry::getEntryPiecesScored));
-    }
+    }*/
 
     public class Entry{
         private Date date;
@@ -182,46 +183,46 @@ public class Data {
         }
 
 
-        public int getEntryAutoSamplesScored(Entry e){
+        public static int getEntryAutoSamplesScored(Entry e){
             return e.getAutoSamplesScored();
         }
-        public int getEntryAutoSpecimensScored(Entry e){
+        public static int getEntryAutoSpecimensScored(Entry e){
             return e.getAutoSpecimensScored();
         }
-        public int getEntryTeleopSamplesScored(Entry e){
+        public static int getEntryTeleopSamplesScored(Entry e){
             return e.getTeleopSamplesScored();
         }
-        public int getEntryTeleopSpecimensScored(Entry e){
+        public static int getEntryTeleopSpecimensScored(Entry e){
             return e.getTeleopSpecimensScored();
         }
-        public int getEntryTeleopPoints(Entry e){
+        public static int getEntryTeleopPoints(Entry e){
             return e.getTeleopPoints();
         }
-        static int getEntryNet(Entry e){
+        public static int getEntryNet(Entry e){
             return e.getNet();
         }
-        static int getEntryLowBasket(Entry e){
+        public static int getEntryLowBasket(Entry e){
             return e.getLowBasket();
         }
-        static int getEntryHighBasket(Entry e){
+        public static int getEntryHighBasket(Entry e){
             return e.getHighBasket();
         }
-        static int getEntryLowChamber(Entry e){
+        public static int getEntryLowChamber(Entry e){
             return e.getLowChamber();
         }
-        static int getEntryHighChamber(Entry e){
+        public static int getEntryHighChamber(Entry e){
             return e.getHighChamber();
         }
-        static int getEntryEndgamePoints(Entry e){
+        public static int getEntryEndgamePoints(Entry e){
             return e.getEndgamePoints();
         }
-        static int getEntryAutoPoints(Entry e){
+        public static int getEntryAutoPoints(Entry e){
             return e.getAutoPoints();
         }
-        static int getEntryTotalPoints(Entry e){
+        public static int getEntryTotalPoints(Entry e){
             return e.getTotalPoints();
         }
-        static int getEntryPiecesScored(Entry e){
+        public static int getEntryPiecesScored(Entry e){
             return e.getPiecesScored();
         }
 

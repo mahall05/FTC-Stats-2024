@@ -15,18 +15,20 @@ public class Main{
 
     public Main(){
         workbook = Utilities.getWorkbookFromFile(Settings.fileName);
-        team = new Team(workbook, new TeamMember[] {new TeamMember("Cas"),
-                                        new TeamMember("Zoe"),
-                                        new TeamMember("Ben"),
-                                        new TeamMember("Lucas"),
-                                        new TeamMember("Max"),
-                                        new TeamMember("Jillian"),
-                                        new TeamMember("Hailey"),
-                                        new TeamMember("Keller"),
-                                        new TeamMember("Maddie"),
-                                        new TeamMember("Caleb"),
-                                        new TeamMember("Matt"),
-                                        new TeamMember("Alan")});
+        team = new Team(workbook, new TeamMember[] {new TeamMember("Cas", workbook),
+                                        new TeamMember("Zoe", workbook),
+                                        new TeamMember("Ben", workbook),
+                                        new TeamMember("Lucas", workbook),
+                                        new TeamMember("Max", workbook),
+                                        new TeamMember("Jillian", workbook),
+                                        new TeamMember("Hailey", workbook),
+                                        new TeamMember("Keller", workbook),
+                                        new TeamMember("Maddie", workbook),
+                                        new TeamMember("Caleb", workbook),
+                                        new TeamMember("Matt", workbook),
+                                        new TeamMember("Alan", workbook)});
+    
+        Utilities.writeWorkbookToSpreadsheet(Settings.fileName, workbook);
     }
 
     public static void main(String[] args){

@@ -1,15 +1,16 @@
 package Team;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import Core.Settings;
 import Core.Utilities;
 import Other.Data;
 
 public class Team extends Group{
-    private Data data;
-
     private Group drivers;
     private Group specialists;
     private Group coaches;
@@ -17,9 +18,7 @@ public class Team extends Group{
 
 
     public Team(XSSFWorkbook wb, TeamMember[] members){
-        super(members);
-        data = new Data(wb);
-        entries = data.getEntries();
+        super(members, wb);
 
         ArrayList<TeamMember> drivers = new ArrayList<TeamMember>();
         ArrayList<TeamMember> specialists = new ArrayList<TeamMember>();
@@ -52,10 +51,10 @@ public class Team extends Group{
         humans.add(find(members, "Zoe"));
         humans.add(find(members, "Caleb"));
 
-        this.drivers = new Group(drivers.toArray());
-        this.specialists = new Group(specialists.toArray());
-        this.coaches = new Group(coaches.toArray());
-        this.humans = new Group(humans.toArray());
+        this.drivers = new Group(drivers.toArray(), wb);
+        this.specialists = new Group(specialists.toArray(), wb);
+        this.coaches = new Group(coaches.toArray(), wb);
+        this.humans = new Group(humans.toArray(), wb);
 
         for(Data.Entry e : entries){
             if(e.getDriver()!=null){
@@ -79,7 +78,27 @@ public class Team extends Group{
                 }
             }
         }
-        System.out.println("Done");
+        
+        Map<Integer, ArrayList<Double>> dataMap = new HashMap<Integer, ArrayList<Double>>();
+        dataMap.put(0, Utilities.arrayToList(net));
+        dataMap.put(1, Utilities.arrayToList(lowBasket));
+        dataMap.put(2, Utilities.arrayToList(highBasket));
+        dataMap.put(3, Utilities.arrayToList(lowChamber));
+        dataMap.put(4, Utilities.arrayToList(highChamber));
+        dataMap.put(5, Utilities.arrayToList(endgamePoints));
+        dataMap.put(6, Utilities.arrayToList(autoPoints));
+        dataMap.put(7, Utilities.arrayToList(totalPoints));
+        dataMap.put(8, Utilities.arrayToList(teleopPoints));
+        dataMap.put(9, Utilities.arrayToList(piecesScored));
+        dataMap.put(10, Utilities.arrayToList(autoSamplesScored));
+        dataMap.put(11, Utilities.arrayToList(autoSpecimensScored));
+        dataMap.put(12, Utilities.arrayToList(teleopSamplesScored));
+        dataMap.put(13, Utilities.arrayToList(teleopSpecimensScored));
+        
+        Utilities.writeDatamapToSheet(3, Utilities.getSheetFromWorkbook(wb, "Team"), dataMap);
+        for(TeamMember m : members){
+            m.calcData();
+        }
     }
 
     public TeamMember find(TeamMember[] list, String name){
