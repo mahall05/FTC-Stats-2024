@@ -10,8 +10,6 @@ import Other.Data;
 public class Team extends Group{
     private Data data;
 
-    private ArrayList<Data.Entry> entries;
-
     private Group drivers;
     private Group specialists;
     private Group coaches;

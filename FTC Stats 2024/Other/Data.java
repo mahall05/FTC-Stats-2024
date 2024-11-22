@@ -39,11 +39,11 @@ public class Data {
         return weight;
     }
 
-    private double calcMean(Function<Entry, Integer> f){
+    private double calcMean(ArrayList<Entry> es, Function<Entry, Integer> f){
         double sum = 0;
         double numValues = 0;
 
-        for(Entry e : entries){
+        for(Entry e : es){
             double val = f.apply(e);
             if(val>=0){
                 sum+=val * calcWeight(e);
@@ -54,13 +54,13 @@ public class Data {
         return mean;
     }
 
-    private double calcStdDev(Function<Entry, Integer> f){
-        double mean = calcMean(f);
+    private double calcStdDev(ArrayList<Entry> es, Function<Entry, Integer> f){
+        double mean = calcMean(es, f);
 
         double sqrDevSum = 0;
         double numValues = 0;
 
-        for(Entry e : entries){
+        for(Entry e : es){
             double val = f.apply(e);
             if(val>=0){
                 double deviation = Math.abs(val-mean);
@@ -160,6 +160,43 @@ public class Data {
         private int totalPoints;
         private int piecesScored;
 
+        private int autoSamplesScored;
+        private int autoSpecimensScored;
+        private int teleopSamplesScored;
+        private int teleopSpecimensScored;
+        private int teleopPoints;
+
+        private void calcPieces(){
+            double points = autoPoints;
+            if(points % 2 != 0){
+                points-=3;
+            }
+
+            autoSpecimensScored = (int) ((points - points%10)/10);
+            autoSamplesScored = (int) ((points - autoSpecimensScored*10)/8);
+
+            teleopSpecimensScored = lowChamber+highChamber - autoSpecimensScored;
+            teleopSamplesScored = lowBasket+highBasket - autoSamplesScored;
+
+            teleopPoints = totalPoints - autoPoints;
+        }
+
+
+        public int getEntryAutoSamplesScored(Entry e){
+            return e.getAutoSamplesScored();
+        }
+        public int getEntryAutoSpecimensScored(Entry e){
+            return e.getAutoSpecimensScored();
+        }
+        public int getEntryTeleopSamplesScored(Entry e){
+            return e.getTeleopSamplesScored();
+        }
+        public int getEntryTeleopSpecimensScored(Entry e){
+            return e.getTeleopSpecimensScored();
+        }
+        public int getEntryTeleopPoints(Entry e){
+            return e.getTeleopPoints();
+        }
         static int getEntryNet(Entry e){
             return e.getNet();
         }
@@ -203,6 +240,8 @@ public class Data {
             this.autoPoints=autoPoints;
             this.totalPoints=totalPoints;
             this.piecesScored=piecesScored;
+
+            calcPieces();
         }
 
         public Date getDate(){return date;}
@@ -219,6 +258,11 @@ public class Data {
         public int getAutoPoints(){return autoPoints;}
         public int getTotalPoints(){return totalPoints;}
         public int getPiecesScored(){return piecesScored;}
+        public int getAutoSamplesScored(){return autoSamplesScored;}
+        public int getAutoSpecimensScored(){return autoSpecimensScored;}
+        public int getTeleopSamplesScored(){return teleopSamplesScored;}
+        public int getTeleopSpecimensScored(){return teleopSpecimensScored;}
+        public int getTeleopPoints(){return teleopPoints;}
 
         public String toString(){
             return getDate() + " - " + getDriver() + " - " + getSpecialist() + " - " + getHuman() + " - " + getCoach() + " - " + getNet() + " - " + getLowBasket() + " - " + getHighBasket() + " - " + getLowChamber() + " - " + getHighChamber() + " - " + getEndgamePoints() + " - " + getAutoPoints() + " - " + getTotalPoints() + " - " + getPiecesScored();
