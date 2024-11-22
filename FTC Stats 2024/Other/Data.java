@@ -22,10 +22,13 @@ public class Data {
         entries = new ArrayList<Entry>();
         date = new Date();
 
-        getEntries();
-        printEntries();
-        printData();
-        calcWeight(entries.get(0));
+        retrieveEntries();
+        //printEntries();
+        //printData();
+    }
+
+    public ArrayList<Entry> getEntries(){
+        return entries;
     }
 
     private double calcWeight(Entry e){
@@ -74,7 +77,7 @@ public class Data {
 
     // Format
     // Date, Drive, Specials, Human, Coach, Net, Low Basket, High Basket, Low Chamber, High Chamber, Endgame, Auto Points, Total Points, Pieces Scored
-    private void getEntries(){
+    private void retrieveEntries(){
         for(int i = 1; i <= sheet.getLastRowNum(); i++){
             if(sheet.getRow(i)!=null){
                 XSSFRow row = sheet.getRow(i);

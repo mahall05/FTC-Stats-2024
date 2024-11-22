@@ -1,0 +1,3 @@
+Estimated points contribution based on average points - team average
+ - Or based on StdDevations away from mean * value of a std deviation
+Std Devation
