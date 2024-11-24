@@ -223,10 +223,11 @@ public class Data {
             }
 
             autoSpecimensScored = (int) ((points - points%10)/10);
-            autoSamplesScored = (int) ((points - autoSpecimensScored*10)/8);
+            autoSamplesScored = (int) ((points - autoSpecimensScored*10 - points%8)/8);
+            autoSamplesScored += (int) ((points - autoSpecimensScored*10 - autoSamplesScored*8)/4);
 
             teleopSpecimensScored = lowChamber+highChamber - autoSpecimensScored;
-            teleopSamplesScored = lowBasket+highBasket - autoSamplesScored;
+            teleopSamplesScored = lowBasket+highBasket+net - autoSamplesScored;
 
             teleopPoints = totalPoints - autoPoints;
         }
