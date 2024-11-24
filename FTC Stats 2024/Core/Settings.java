@@ -7,6 +7,9 @@ public class Settings {
 
     public static double dateWeightFunction(double days){
         double weight = (3.82257*Math.pow(10,12))*Math.pow(0.789549*days+23.60296,-10.14368) + Math.pow(sigmoid(0.276914*days-4.51361), 0.925817) - 0.0320539;
+        if(weight<0 || days>30){
+            weight=0;
+        }
         return weight;
     }
     private static double sigmoid(double x){
