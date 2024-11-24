@@ -81,6 +81,60 @@ public class Data {
         return stdDev;
     }
 
+    public static double[] calc5NS(ArrayList<Entry> es, Function<Entry, Integer> f){
+        if(es.isEmpty()) {return new double[] {-1, -1, -1, -1, -1};}
+
+        double[] sortedArray = new double[es.size()];
+        for(int i = 0; i < sortedArray.length; i++){
+            sortedArray[i] = f.apply(es.get(i));
+        }
+
+        for(int i = (sortedArray.length-1); i>=0; i--){
+            for(int j = 1; j <= i; j++){
+                if(sortedArray[j-1] > sortedArray[j]){
+                    double temp = sortedArray[j-1];
+                    sortedArray[j-1] = sortedArray[j];
+                    sortedArray[j] = temp;
+                }
+            }
+        }
+        int count = 0;
+        for(int i = 0; i < sortedArray.length; i++){
+            if(sortedArray[i]<0){
+                count++;
+            }else{
+                i=sortedArray.length;
+            }
+        }
+
+        double fixedArray[] = new double[sortedArray.length-count];
+        for(int i = 0; i<fixedArray.length; i++){
+            fixedArray[i] = sortedArray[i+count];
+        }
+
+        double q1 = fixedArray[(int) (25.0/100.0*(fixedArray.length+1))];
+        double med = fixedArray[(int) (50.0/100.0*(fixedArray.length+1))];
+        double q3 = fixedArray[(int) (75.0/100.0*(fixedArray.length+1))];
+
+        double iqr = q3 - q1;
+        double min = -1, max = -1;
+
+        for(int i = 0; i < fixedArray.length-1; i++){
+            if(fixedArray[i] >= q1-(1.5 * iqr)){
+                min = fixedArray[i];
+                i = fixedArray.length;
+            }
+        }
+        for(int i = fixedArray.length-1; i>=0; i--){
+            if(fixedArray[i] <= q3+(1.5*iqr)){
+                max = fixedArray[i];
+                i = -1;
+            }
+        }
+
+        return new double[] {min, q1, med, q3, max};
+    }
+
     // Format
     // Date, Drive, Specials, Human, Coach, Net, Low Basket, High Basket, Low Chamber, High Chamber, Endgame, Auto Points, Total Points, Pieces Scored, Auto Ran, Teleop Strategy, Match Type
     private void retrieveEntries(){
@@ -224,12 +278,12 @@ public class Data {
 
             autoSpecimensScored = (int) ((points - points%10)/10);
             autoSamplesScored = (int) ((points - autoSpecimensScored*10 - points%8)/8);
-            autoSamplesScored += (int) ((points - autoSpecimensScored*10 - autoSamplesScored*8)/4);
+            autoSamplesScored += (int) ((points - autoSpecimensScored*10 - autoSamplesScored*8)/2);
 
             teleopSpecimensScored = lowChamber+highChamber - autoSpecimensScored;
             teleopSamplesScored = lowBasket+highBasket+net - autoSamplesScored;
 
-            teleopPoints = totalPoints - autoPoints;
+            teleopPoints = totalPoints - autoPoints - endgamePoints;
         }
 
 

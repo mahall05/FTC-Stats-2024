@@ -15,18 +15,18 @@ public class Main{
 
     public Main(){
         workbook = Utilities.getWorkbookFromFile(Settings.fileName);
-        team = new Team(workbook, new TeamMember[] {new TeamMember("Cas", workbook),
-                                        new TeamMember("Zoe", workbook),
-                                        new TeamMember("Ben", workbook),
-                                        new TeamMember("Lucas", workbook),
-                                        new TeamMember("Max", workbook),
-                                        new TeamMember("Jillian", workbook),
-                                        new TeamMember("Hailey", workbook),
-                                        new TeamMember("Keller", workbook),
-                                        new TeamMember("Maddie", workbook),
-                                        new TeamMember("Caleb", workbook),
-                                        new TeamMember("Matt", workbook),
-                                        new TeamMember("Alan", workbook)});
+        team = new Team(workbook, new TeamMember[] {new TeamMember("Cas", workbook, 0),
+                                        new TeamMember("Zoe", workbook, 1),
+                                        new TeamMember("Ben", workbook, 0),
+                                        new TeamMember("Lucas", workbook, 0),
+                                        new TeamMember("Max", workbook, 1),
+                                        new TeamMember("Jillian", workbook, 0),
+                                        new TeamMember("Hailey", workbook, 1),
+                                        new TeamMember("Keller", workbook, 0),
+                                        new TeamMember("Maddie", workbook, 2),
+                                        new TeamMember("Caleb", workbook, 2),
+                                        new TeamMember("Matt", workbook, 2),
+                                        new TeamMember("Alan", workbook, 2)});
     
         Utilities.writeWorkbookToSpreadsheet(Settings.fileName, workbook);
     }

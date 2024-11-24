@@ -24,11 +24,14 @@ public class TeamMember {
 
     private ArrayList<ArrayList<Entry>> matches;
 
+    private int primaryType;
+
     // Net, Low Basket, High Basket, Low Chamber, High Chamber, Endgame, Auto Points, Total Points, Pieces Scored, Auto Samples, Auto Specimens, Teleop Samples, Teleop Specimens
 
     protected double[][][] data = new double[14][4][2];
 
-    public TeamMember(String name, XSSFWorkbook wb){
+    public TeamMember(String name, XSSFWorkbook wb, int primaryType){
+        this.primaryType = primaryType;
         this.name=name;
         this.wb=wb;
 
@@ -90,6 +93,13 @@ public class TeamMember {
         Map<Integer, ArrayList<Double>> dataMap = new HashMap<Integer, ArrayList<Double>>();
         for(int i = 0; i <=13 ; i++){
             dataMap.put(i, Utilities.arrayToList(data[i]));
+        }
+
+        dataMap.put(14, new ArrayList<Double>());
+        dataMap.put(15, new ArrayList<Double>());
+
+        for(int i = 0; i<=13; i++){
+            dataMap.put(i+16, Utilities.arrayToList(Data.calc5NS(matches.get(primaryType), Data.Entry.getData(i))));
         }
 
         Utilities.writeDatamapToSheet(3, Utilities.getSheetFromWorkbook(wb, name), dataMap);
