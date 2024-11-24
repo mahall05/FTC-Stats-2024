@@ -95,12 +95,14 @@ public class TeamMember {
             dataMap.put(i, Utilities.arrayToList(data[i]));
         }
 
+        /*
         dataMap.put(14, new ArrayList<Double>());
         dataMap.put(15, new ArrayList<Double>());
 
         for(int i = 0; i<=13; i++){
             dataMap.put(i+16, Utilities.arrayToList(Data.calc5NS(matches.get(primaryType), Data.Entry.getData(i))));
         }
+        */
 
         Utilities.writeDatamapToSheet(3, Utilities.getSheetFromWorkbook(wb, name), dataMap);
     }

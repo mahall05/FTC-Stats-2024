@@ -10,6 +10,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import Core.Settings;
 import Core.Utilities;
 
 public class Data {
@@ -35,14 +36,14 @@ public class Data {
         long millisecondsBetween = Math.abs(date.getTime() - e.getDate().getTime());
         double daysBetween = millisecondsBetween/ (24.0 * 60.0 * 60.0 * 1000.0) - 1;
         
-        double weight = Math.pow(1.07, -daysBetween);
+        double dateWeight = Settings.dateWeightFunction(daysBetween);
 
         if(e.getMatchType().equals("Comp")){
-            weight*=1.0;
+            dateWeight*=1.0;
         }else{
-            weight*=0.5;
+            dateWeight*=Settings.relativePracticeWeight;
         }
-        return weight;
+        return dateWeight;
     }
 
     public static double calcMean(ArrayList<Entry> es, Function<Entry, Integer> f){
