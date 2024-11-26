@@ -142,25 +142,27 @@ public class Data {
         for(int i = 1; i <= sheet.getLastRowNum(); i++){
             if(sheet.getRow(i)!=null){
                 XSSFRow row = sheet.getRow(i);
-
-                entries.add(new Entry(row.getCell(0)==null?null: row.getCell(0).getDateCellValue(), 
-                                        row.getCell(1)==null?null: row.getCell(1).getStringCellValue(), 
-                                        row.getCell(2)==null?null: row.getCell(2).getStringCellValue(), 
-                                        row.getCell(3)==null?null: row.getCell(3).getStringCellValue(), 
-                                        row.getCell(4)==null?null: row.getCell(4).getStringCellValue(), 
-                                        row.getCell(5)==null?-1: (int) row.getCell(5).getNumericCellValue(), 
-                                        row.getCell(6)==null?-1: (int) row.getCell(6).getNumericCellValue(), 
-                                        row.getCell(7)==null?-1: (int) row.getCell(7).getNumericCellValue(), 
-                                        row.getCell(8)==null?-1: (int) row.getCell(8).getNumericCellValue(), 
-                                        row.getCell(9)==null?-1: (int) row.getCell(9).getNumericCellValue(), 
-                                        row.getCell(10)==null?-1: (int) row.getCell(10).getNumericCellValue(), 
-                                        row.getCell(11)==null?-1: (int) row.getCell(11).getNumericCellValue(), 
-                                        row.getCell(12)==null?-1: (int) row.getCell(12).getNumericCellValue(), 
-                                        row.getCell(13)==null?-1: (int) row.getCell(13).getNumericCellValue(),
-                                        row.getCell(14)==null?-1: (int) row.getCell(14).getNumericCellValue(),
-                                        row.getCell(15)==null?null: row.getCell(15).getStringCellValue(),
-                                        row.getCell(16)==null?null: row.getCell(16).getStringCellValue()
-                                    ));
+                
+                if(row.getCell(17)==null || !row.getCell(17).getStringCellValue().equals("*")){
+                    entries.add(new Entry(row.getCell(0)==null?null: row.getCell(0).getDateCellValue(), 
+                                            row.getCell(1)==null?null: row.getCell(1).getStringCellValue(), 
+                                            row.getCell(2)==null?null: row.getCell(2).getStringCellValue(), 
+                                            row.getCell(3)==null?null: row.getCell(3).getStringCellValue(), 
+                                            row.getCell(4)==null?null: row.getCell(4).getStringCellValue(), 
+                                            row.getCell(5)==null?-1: (int) row.getCell(5).getNumericCellValue(), 
+                                            row.getCell(6)==null?-1: (int) row.getCell(6).getNumericCellValue(), 
+                                            row.getCell(7)==null?-1: (int) row.getCell(7).getNumericCellValue(), 
+                                            row.getCell(8)==null?-1: (int) row.getCell(8).getNumericCellValue(), 
+                                            row.getCell(9)==null?-1: (int) row.getCell(9).getNumericCellValue(), 
+                                            row.getCell(10)==null?-1: (int) row.getCell(10).getNumericCellValue(), 
+                                            row.getCell(11)==null?-1: (int) row.getCell(11).getNumericCellValue(), 
+                                            row.getCell(12)==null?-1: (int) row.getCell(12).getNumericCellValue(), 
+                                            row.getCell(13)==null?-1: (int) row.getCell(13).getNumericCellValue(),
+                                            row.getCell(14)==null?-1: (int) row.getCell(14).getNumericCellValue(),
+                                            row.getCell(15)==null?null: row.getCell(15).getStringCellValue(),
+                                            row.getCell(16)==null?null: row.getCell(16).getStringCellValue()
+                                        ));
+                }
             }
         }
     }
