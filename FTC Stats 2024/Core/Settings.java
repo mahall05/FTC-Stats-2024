@@ -1,7 +1,7 @@
 package Core;
 
 public class Settings {
-    public static String fileName = "Red Team Data.xlsx";
+    public static String fileName = "Sheets/Red Team Data.xlsx";
 
     public static double relativePracticeWeight = 0.25;
 
