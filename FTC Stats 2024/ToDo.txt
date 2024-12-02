@@ -3,3 +3,5 @@ How much of the variation in score can be explained by their contribution?
 
 
 Ctrl-Alt-f9 forces excel reload
+
+Calculate how much the drive coaches and partners affect their scores

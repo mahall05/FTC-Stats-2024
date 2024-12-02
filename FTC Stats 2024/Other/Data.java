@@ -143,7 +143,7 @@ public class Data {
             if(sheet.getRow(i)!=null){
                 XSSFRow row = sheet.getRow(i);
                 
-                if(row.getCell(17)==null || !row.getCell(17).getStringCellValue().equals("*")){
+                if(row.getCell(0)!=null && row.getCell(0).getDateCellValue()!=null && (row.getCell(17)==null || !row.getCell(17).getStringCellValue().equals("*"))){
                     entries.add(new Entry(row.getCell(0)==null?null: row.getCell(0).getDateCellValue(), 
                                             row.getCell(1)==null?null: row.getCell(1).getStringCellValue(), 
                                             row.getCell(2)==null?null: row.getCell(2).getStringCellValue(), 
