@@ -43,6 +43,13 @@ public class Data {
         }else{
             dateWeight*=Settings.relativePracticeWeight;
         }
+
+        if(e.wasCoachDriving()){
+            dateWeight*=Settings.relativeCoachMatchWeight;
+        }else{
+            dateWeight*=1.0;
+        }
+
         return dateWeight;
     }
 
@@ -237,6 +244,15 @@ public class Data {
         private int autoRan;
         private String teleopStrategy;
         private String matchType;
+
+        public boolean wasCoachDriving(){
+            boolean coachDriving = false;
+            if(getDriver().equals("Matt")||getDriver().equals("Caleb")||getDriver().equals("Maddie")
+            ||getSpecialist().equals("Matt")||getSpecialist().equals("Caleb")||getSpecialist().equals("Maddie")){
+            coachDriving=true;}
+
+            return coachDriving;
+        }
 
         public static Function<Entry, Integer> getData(int data){
             switch(data){
