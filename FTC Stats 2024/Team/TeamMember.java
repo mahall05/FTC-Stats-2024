@@ -112,8 +112,7 @@ public class TeamMember {
         XSSFSheet sheet = Utilities.getSheetFromWorkbook(wb, name);
         for(int i = 0; i < matches.get(primaryType).size(); i++){
             Row row = Utilities.getRowFromSheet(sheet, i+21);
-            Utilities.getCellFromRow(row, 0).setCellValue(Utilities.dateToString(matches.get(primaryType).get(i).getDate()));
-            System.out.println(Utilities.dateToString(matches.get(primaryType).get(i).getDate()));
+            Utilities.getCellFromRow(row, 0).setCellValue(Utilities.dateToString(matches.get(primaryType).get(i).getDate()).substring(0,6));
             Utilities.getCellFromRow(row, 1).setCellValue(matches.get(primaryType).get(i).getDriver());
             Utilities.getCellFromRow(row, 2).setCellValue(matches.get(primaryType).get(i).getSpecialist());
             Utilities.getCellFromRow(row, 3).setCellValue(matches.get(primaryType).get(i).getHuman());
