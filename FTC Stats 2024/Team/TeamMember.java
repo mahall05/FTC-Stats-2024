@@ -5,7 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import com.microsoft.schemas.office.visio.x2012.main.CellType;
 
 import Core.Settings;
 import Core.Utilities;
@@ -103,6 +108,35 @@ public class TeamMember {
             dataMap.put(i+16, Utilities.arrayToList(Data.calc5NS(matches.get(primaryType), Data.Entry.getData(i))));
         }
         */
+
+        XSSFSheet sheet = Utilities.getSheetFromWorkbook(wb, name);
+        for(int i = 0; i < matches.get(primaryType).size(); i++){
+            Row row = Utilities.getRowFromSheet(sheet, i+21);
+            Utilities.getCellFromRow(row, 0).setCellValue(Utilities.dateToString(matches.get(primaryType).get(i).getDate()));
+            System.out.println(Utilities.dateToString(matches.get(primaryType).get(i).getDate()));
+            Utilities.getCellFromRow(row, 1).setCellValue(matches.get(primaryType).get(i).getDriver());
+            Utilities.getCellFromRow(row, 2).setCellValue(matches.get(primaryType).get(i).getSpecialist());
+            Utilities.getCellFromRow(row, 3).setCellValue(matches.get(primaryType).get(i).getHuman());
+            Utilities.getCellFromRow(row, 4).setCellValue(matches.get(primaryType).get(i).getCoach());
+            Utilities.getCellFromRow(row, 5).setCellValue(matches.get(primaryType).get(i).getNet());
+            Utilities.getCellFromRow(row, 6).setCellValue(matches.get(primaryType).get(i).getLowBasket());
+            Utilities.getCellFromRow(row, 7).setCellValue(matches.get(primaryType).get(i).getHighBasket());
+            Utilities.getCellFromRow(row, 8).setCellValue(matches.get(primaryType).get(i).getLowChamber());
+            Utilities.getCellFromRow(row, 9).setCellValue(matches.get(primaryType).get(i).getHighChamber());
+            Utilities.getCellFromRow(row, 10).setCellValue(matches.get(primaryType).get(i).getEndgamePoints());
+            Utilities.getCellFromRow(row, 11).setCellValue(matches.get(primaryType).get(i).getAutoPoints());
+            Utilities.getCellFromRow(row, 12).setCellValue(matches.get(primaryType).get(i).getTotalPoints());
+            Utilities.getCellFromRow(row, 13).setCellValue(matches.get(primaryType).get(i).getTeleopPoints());
+            Utilities.getCellFromRow(row, 14).setCellValue(matches.get(primaryType).get(i).getPiecesScored());
+            Utilities.getCellFromRow(row, 15).setCellValue(matches.get(primaryType).get(i).getAutoSamplesScored());
+            Utilities.getCellFromRow(row, 16).setCellValue(matches.get(primaryType).get(i).getAutoSpecimensScored());
+            Utilities.getCellFromRow(row, 17).setCellValue(matches.get(primaryType).get(i).getTeleopSamplesScored());
+            Utilities.getCellFromRow(row, 18).setCellValue(matches.get(primaryType).get(i).getTeleopSpecimensScored());
+            Utilities.getCellFromRow(row, 19).setCellValue(matches.get(primaryType).get(i).getAutoRan());
+            Utilities.getCellFromRow(row, 20).setCellValue(matches.get(primaryType).get(i).getTeleopStrategy());
+            Utilities.getCellFromRow(row, 21).setCellValue(matches.get(primaryType).get(i).getMatchType());
+            Utilities.getCellFromRow(row, 22).setCellValue(matches.get(primaryType).get(i).wasCoachDriving());
+        }
 
         Utilities.writeDatamapToSheet(3, Utilities.getSheetFromWorkbook(wb, name), dataMap);
     }
