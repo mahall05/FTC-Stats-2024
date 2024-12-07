@@ -1,6 +1,7 @@
 package Team;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +16,7 @@ public class Team extends Group{
     private Group specialists;
     private Group coaches;
     private Group humans;
-
+    public static Date firstDay = Utilities.getCellFromRow(Utilities.getRowFromSheet(Utilities.getSheetFromWorkbook(Utilities.getWorkbookFromFile(Settings.fileName), "Data"), 2), 0).getDateCellValue();
 
     public Team(XSSFWorkbook wb, TeamMember[] members){
         super(members, wb);
