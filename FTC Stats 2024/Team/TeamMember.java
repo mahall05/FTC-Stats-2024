@@ -116,7 +116,7 @@ public class TeamMember {
         for(int i = 0; i < matches.get(primaryType).size(); i++){
             Row row = Utilities.getRowFromSheet(sheet, i+21);
             //Utilities.getCellFromRow(row, 0).setCellValue(Utilities.dateToString(matches.get(primaryType).get(i).getDate()).substring(0,6));
-            Utilities.getCellFromRow(row, 0).setCellValue((int) ((matches.get(primaryType).get(i).getDate().getTime()-Team.firstDay.getTime()) / (24.0 * 60.0 * 60.0 * 1000.0) - 1));
+            Utilities.getCellFromRow(row, 0).setCellValue((int) ((matches.get(primaryType).get(i).getDate().getTime()-Team.firstDay.getTime()) / (24.0 * 60.0 * 60.0 * 1000.0) + 1));
             Utilities.getCellFromRow(row, 1).setCellValue(matches.get(primaryType).get(i).getDriver());
             Utilities.getCellFromRow(row, 2).setCellValue(matches.get(primaryType).get(i).getSpecialist());
             Utilities.getCellFromRow(row, 3).setCellValue(matches.get(primaryType).get(i).getHuman());
