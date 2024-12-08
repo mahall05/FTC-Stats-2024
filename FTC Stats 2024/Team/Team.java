@@ -5,11 +5,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import Core.Settings;
 import Core.Utilities;
 import Other.Data;
+//21-22-23
 
 public class Team extends Group{
     private Group drivers;
@@ -88,6 +90,18 @@ public class Team extends Group{
         Utilities.writeDatamapToSheet(3, Utilities.getSheetFromWorkbook(wb, "Team"), dataMap);
         for(TeamMember m : members){
             m.calcData();
+        }
+
+        for(int i = 0; i < entries.size(); i++){
+            Row row = Utilities.getRowFromSheet(Utilities.getSheetFromWorkbook(wb, "Data"), i+2);
+            row.createCell(21).setCellValue((int) ((entries.get(i).getDate().getTime()-Team.firstDay.getTime()) / (24.0 * 60.0 * 60.0 * 1000.0) + 1));
+            if(entries.get(i).getTeleopStrategy()==null){
+
+            }else if(entries.get(i).getTeleopStrategy().equals("Samples")){
+                row.createCell(22).setCellValue(entries.get(i).getTeleopSamplesScored());
+            }else if(entries.get(i).getTeleopStrategy().equals("Specimens")){
+                row.createCell(23).setCellValue(entries.get(i).getTeleopSpecimensScored());
+            }
         }
 
         this.drivers.calcComparisonData("Drivers", 0);

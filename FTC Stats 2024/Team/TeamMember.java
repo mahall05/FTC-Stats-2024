@@ -141,6 +141,19 @@ public class TeamMember {
             Utilities.getCellFromRow(row, 22).setCellValue(matches.get(primaryType).get(i).wasCoachDriving());
         }
 
+        for(int i = 0; i < matches.get(primaryType).size(); i++){
+            Row row = Utilities.getRowFromSheet(sheet, i+21);
+            row.createCell(25).setCellValue((int) ((matches.get(primaryType).get(i).getDate().getTime()-Team.firstDay.getTime()) / (24.0 * 60.0 * 60.0 * 1000.0) + 1));
+
+            if(matches.get(primaryType).get(i).getTeleopStrategy()==null){
+
+            }else if(matches.get(primaryType).get(i).getTeleopStrategy().equals("Samples")){
+                row.createCell(26).setCellValue(matches.get(primaryType).get(i).getTeleopSamplesScored());
+            }else if(matches.get(primaryType).get(i).getTeleopStrategy().equals("Specimens")){
+                row.createCell(27).setCellValue(matches.get(primaryType).get(i).getTeleopSpecimensScored());
+            }
+        }
+
         Utilities.writeDatamapToSheet(3, Utilities.getSheetFromWorkbook(wb, name), dataMap);
     }
 }
