@@ -12,4 +12,4 @@ Seperate teleop scores for specimen and samples so we get to compare
 
 Net pieces count for samples
 
-Trend by changing avg and trend by individual days
+Somehow some teleop pieces scored have negative calculated values

@@ -52,6 +52,26 @@ public class Data {
 
         return dateWeight;
     }
+    public static double calcWeight(Entry e, Date refDate){
+        long millisecondsBetween = Math.abs(refDate.getTime() - e.getDate().getTime());
+        double daysBetween = millisecondsBetween/ (24.0 * 60.0 * 60.0 * 1000.0) - 1;
+        
+        double dateWeight = Settings.dateWeightFunction(daysBetween);
+
+        if(e.getMatchType().equals("Comp")){
+            dateWeight*=1.0;
+        }else{
+            dateWeight*=Settings.relativePracticeWeight;
+        }
+
+        if(e.wasCoachDriving()){
+            dateWeight*=Settings.relativeCoachMatchWeight;
+        }else{
+            dateWeight*=1.0;
+        }
+
+        return dateWeight;
+    }
 
     public static double calcMean(ArrayList<Entry> es, Function<Entry, Integer> f){
         double sum = 0;
@@ -62,6 +82,20 @@ public class Data {
             if(val>=0){
                 sum+=val * calcWeight(e);
                 numValues += calcWeight(e);
+            }
+        }
+        double mean = sum/numValues;
+        return mean;
+    }
+    public static double calcMean(ArrayList<Entry> es, Function<Entry, Integer> f, Date refDate){
+        double sum = 0;
+        double numValues = 0;
+
+        for(Entry e : es){
+            double val = f.apply(e);
+            if(val>=0){
+                sum+=val * calcWeight(e, refDate);
+                numValues += calcWeight(e, refDate);
             }
         }
         double mean = sum/numValues;
@@ -81,6 +115,26 @@ public class Data {
                 double sqrDev = deviation*deviation;
                 sqrDevSum += sqrDev * calcWeight(e);
                 numValues += calcWeight(e);
+            }
+        }
+
+        double deviationSquared = sqrDevSum/numValues;
+        double stdDev = Math.sqrt(deviationSquared);
+        return stdDev;
+    }
+    public static double calcStdDev(ArrayList<Entry> es, Function<Entry, Integer> f, Date refDate){
+        double mean = calcMean(es, f);
+
+        double sqrDevSum = 0;
+        double numValues = 0;
+
+        for(Entry e : es){
+            double val = f.apply(e);
+            if(val>=0){
+                double deviation = Math.abs(val-mean);
+                double sqrDev = deviation*deviation;
+                sqrDevSum += sqrDev * calcWeight(e, refDate);
+                numValues += calcWeight(e, refDate);
             }
         }
 

@@ -12,6 +12,7 @@ import Core.Settings;
 import Core.Utilities;
 import Other.Data;
 //21-22-23
+import Other.Data.Entry;
 
 public class Team extends Group{
     private Group drivers;
@@ -101,6 +102,42 @@ public class Team extends Group{
                 row.createCell(22).setCellValue(entries.get(i).getTeleopSamplesScored());
             }else if(entries.get(i).getTeleopStrategy().equals("Specimens")){
                 row.createCell(23).setCellValue(entries.get(i).getTeleopSpecimensScored());
+            }
+        }
+
+        for(int i = 0; i < 56; i++){
+            Row row = Utilities.getRowFromSheet(Utilities.getSheetFromWorkbook(wb, "Data"), i+2);
+            row.createCell(25).setCellValue(i);
+
+            if(i< (int) (((new Date()).getTime()-Team.firstDay.getTime()) / (24.0 * 60.0 * 60.0 * 1000.0) + 1)){
+                ArrayList<Entry> sampleList = new ArrayList<Entry>();
+                ArrayList<Entry> specimenList = new ArrayList<Entry>();
+
+                for(Entry e : entries){
+                    int day = (int) ((e.getDate().getTime()-Team.firstDay.getTime()) / (24.0 * 60.0 * 60.0 * 1000.0)) + 1;
+
+                    if(day < i){
+                        if(e.getTeleopStrategy()!=null && e.getTeleopStrategy().equals("Samples")){
+                            sampleList.add(e);
+                        }else if(e.getTeleopStrategy()!=null && e.getTeleopStrategy().equals("Specimens")){
+                            specimenList.add(e);
+                        }
+                    }
+                }
+                double sampleAvg=0, specAvg=0;
+
+                try{
+                    sampleAvg = Data.calcMean(sampleList, Entry::getTeleopSamplesScored, sampleList.get(sampleList.size()-1).getDate());
+                }catch(IndexOutOfBoundsException e){
+                }
+                try{
+                    specAvg = Data.calcMean(specimenList, Entry::getTeleopSpecimensScored, specimenList.get(specimenList.size()-1).getDate());
+                }catch(IndexOutOfBoundsException e){
+
+                }
+
+                row.createCell(26).setCellValue(sampleAvg);
+                row.createCell(27).setCellValue(specAvg);
             }
         }
 
