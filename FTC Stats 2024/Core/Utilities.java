@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 import java.awt.*;
 
@@ -70,6 +71,21 @@ public class Utilities {
         return sheet;
     }
 
+    public static Row getRowFromSheet(XSSFSheet sheet, int rowNum){
+        Row row = sheet.getRow(rowNum);
+        if(row == null){
+            row = sheet.createRow(rowNum);
+        }
+        return row;
+    }
+    public static Cell getCellFromRow(Row row, int cellNum){
+        Cell cell = row.getCell(cellNum);
+        if(cell == null){
+            cell = row.createCell(cellNum);
+        }
+        return cell;
+    }
+
     public static void writeDatamapToSheet(int offset, XSSFSheet sheet, Map<Integer, ArrayList<Double>> sheetMap){
         for(int i = 0; i < sheetMap.size()+100; i++){
             if(sheetMap.get(i) == null){
@@ -104,5 +120,10 @@ public class Utilities {
             }
         }
         return list;
+    }
+
+    public static String dateToString(Date date){
+        String dateString = date.toString();
+        return dateString.substring(4,7) + '-' + dateString.substring(8,10) + '-' + dateString.substring(24, 28);
     }
 }
