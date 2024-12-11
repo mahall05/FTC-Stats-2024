@@ -343,20 +343,284 @@ public class Data {
             }
         }
 
+        public int getSingleData(int data){
+            switch(data){
+                case (0):
+                    return getNet();
+                case (1):
+                    return getLowBasket();
+                case (2):
+                    return getHighBasket();
+                case (3):
+                    return getLowChamber();
+                case (4):
+                    return getHighChamber();
+                case (5):
+                    return getEndgamePoints();
+                case (6):
+                    return getAutoPoints();
+                case (7):
+                    return getTotalPoints();
+                case (8):
+                    return getTeleopPoints();
+                case (9):
+                    return getPiecesScored();
+                case (10):
+                    return getAutoSamplesScored();
+                case (11):
+                    return getAutoSpecimensScored();
+                case (12):
+                    return getTeleopSamplesScored();
+                case (13):
+                    return getTeleopSpecimensScored();
+                default:
+                    return -1;
+            }
+        }
+
         private void calcPieces(){
-            double points = autoPoints;
-            if(points % 2 != 0){
-                points-=3;
+            if(autoPoints<0 || net<0 || lowBasket<0 || highBasket < 0 || lowChamber < 0 || highChamber < 0){
+                autoSamplesScored=-1;
+                autoSpecimensScored=-1;
+                teleopSamplesScored=-1;
+                teleopSpecimensScored=-1;
+            }
+            else{
+                int points = autoPoints;
+
+                if(points % 2 != 0){
+                    points-=3;
+                }
+
+                int[] autoPieces = minimize(points);
+
+                autoSamplesScored = autoPieces[1]+autoPieces[3]+autoPieces[4];
+                autoSpecimensScored = autoPieces[0]+autoPieces[2];
+
+                teleopSamplesScored = this.net+this.lowBasket+this.highBasket - autoSamplesScored;
+                teleopSpecimensScored = this.lowChamber+this.highChamber - autoSpecimensScored;
             }
 
-            autoSpecimensScored = (int) ((points - points%10)/10);
-            autoSamplesScored = (int) ((points - autoSpecimensScored*10 - points%8)/8);
-            autoSamplesScored += (int) ((points - autoSpecimensScored*10 - autoSamplesScored*8)/2);
 
-            teleopSpecimensScored = lowChamber+highChamber - autoSpecimensScored;
-            teleopSamplesScored = lowBasket+highBasket+net - autoSamplesScored;
+            teleopPoints = totalPoints - 2*autoPoints - endgamePoints;
+        }
 
-            teleopPoints = totalPoints - autoPoints - endgamePoints;
+        private int[] minimize(int points){
+            int[] values = {10, 8, 6, 4, 2, 0};
+            int[][] sequences = new int[(int) Math.pow(values.length, 4)][4];
+
+            // CREATE LIST OF ALL POSSIBLE SEQUENCES
+            int p = 0;
+            for(int i = 0; i < values.length; i++){
+                for(int j = 0; j < values.length; j++){
+                    for(int k = 0; k < values.length; k++){
+                        for(int l = 0; l < values.length; l++){
+                            sequences[p] = new int[] {values[i], values[j], values[k], values[l]};
+                            p++;
+                        }
+                    }
+                }
+            }
+
+            // FIND ALL SEQUENCES THAT HAVE CORRECT POINT VALUE
+            ArrayList<int[]> validSequences = new ArrayList<int[]>();
+            for(int[] s : sequences){
+                int sum = 0;
+                for(int i = 0; i < s.length; i++){
+                    sum+=s[i];
+                }
+                if(sum==points){
+                    validSequences.add(s);
+                }
+            }
+
+            //System.out.println("Break");
+            // REMOVE REPEAT SEQUENCES
+            for(int i = 0; i < validSequences.size(); i++){
+                int[] nums = new int[6];
+
+                for(int j = 0; j < validSequences.get(i).length; j++){
+                    switch (validSequences.get(i)[j]){
+                        case(10):
+                            nums[0]++;
+                            break;
+                        case(8):
+                            nums[1]++;
+                            break;
+                        case(6):
+                            nums[2]++;
+                            break;
+                        case(4):
+                            nums[3]++;
+                            break;
+                        case(2):
+                            nums[4]++;
+                            break;
+                        case(0):
+                            nums[5]++;
+                            break;
+                    }
+                }
+
+                for(int j = i+1; j < validSequences.size(); j++){
+                    int[] newNums = new int[6];
+
+                    for(int k = 0; k < validSequences.get(j).length; k++){
+                        switch (validSequences.get(j)[k]){
+                            case(10):
+                                newNums[0]++;
+                                break;
+                            case(8):
+                                newNums[1]++;
+                                break;
+                            case(6):
+                                newNums[2]++;
+                                break;
+                            case(4):
+                                newNums[3]++;
+                                break;
+                            case(2):
+                                newNums[4]++;
+                                break;
+                            case(0):
+                                newNums[5]++;
+                                break;
+                        }
+                    }
+
+                    if(nums[0]==newNums[0] && nums[1]==newNums[1] && nums[2]==newNums[2] && nums[3]==newNums[3] && nums[4]==newNums[4] && nums[5]==newNums[5]){
+                        validSequences.remove(j);
+                        j--;
+                    }
+                }
+            }
+
+            //System.out.println("Break");
+            // REMOVE SEQUENCES THAT WE WOULDN'T USE
+            for(int i = 0; i < validSequences.size(); i++){
+                int[] nums = new int[6];
+
+                for(int j = 0; j < validSequences.get(i).length; j++){
+                    switch (validSequences.get(i)[j]){
+                        case(10):
+                            nums[0]++;
+                            break;
+                        case(8):
+                            nums[1]++;
+                            break;
+                        case(6):
+                            nums[2]++;
+                            break;
+                        case(4):
+                            nums[3]++;
+                            break;
+                        case(2):
+                            nums[4]++;
+                            break;
+                        case(0):
+                            nums[5]++;
+                            break;
+                    }
+                }
+
+                /*
+                if(nums[2]>0){
+                    validSequences.remove(i);
+                    i--;
+                    continue;
+                }
+                */
+
+                // If we score more than one specimen, we wouldn't have any samples scored
+                if(nums[0]+nums[2]>1 && nums[1]+nums[3]+nums[4]>0){
+                    validSequences.remove(i);
+                    i--;
+                    continue;
+                }
+            }
+            
+            /*
+             * Now only one of the possible sequences, when added to the teleop points, would create the total score we earned
+             */
+            for(int i = 0; i < validSequences.size(); i++){
+                int[] teleNums = new int[5];
+
+                int[] nums = new int[5];
+
+                for(int j = 0; j < validSequences.get(i).length; j++){
+                    switch (validSequences.get(i)[j]){
+                        case(10):
+                            nums[0]++;
+                            break;
+                        case(8):
+                            nums[1]++;
+                            break;
+                        case(6):
+                            nums[2]++;
+                            break;
+                        case(4):
+                            nums[3]++;
+                            break;
+                        case(2):
+                            nums[4]++;
+                            break;
+                    }
+                }
+
+                //System.out.println("Break");
+                teleNums[0] = this.highChamber-nums[0];
+                teleNums[1] = this.highBasket-nums[1];
+                teleNums[2] = this.lowChamber-nums[2];
+                teleNums[3] = this.lowBasket-nums[3];
+                teleNums[4] = this.net-nums[4];
+
+                if((teleNums[0]+nums[0])*10+
+                    (teleNums[1]+nums[1])*8+
+                    (teleNums[2]+nums[2])*6+
+                    (teleNums[3]+nums[3])*4+
+                    (teleNums[4]+nums[4])*2 != totalPoints-endgamePoints-autoPoints){
+                        validSequences.remove(i);
+                        i--;
+                        continue;
+                    }
+
+                //System.out.println("Break");
+                for(int j = 0; j < teleNums.length; j++){
+                    if(teleNums[j]<0){
+                        validSequences.remove(i);
+                        i--;
+                        break;
+                    }
+                }
+
+            }
+
+            int[] nums = new int[5];
+            try{
+                for(int j = 0; j < validSequences.get(0).length; j++){
+                    switch (validSequences.get(0)[j]){
+                        case(10):
+                            nums[0]++;
+                            break;
+                        case(8):
+                            nums[1]++;
+                            break;
+                        case(6):
+                            nums[2]++;
+                            break;
+                        case(4):
+                            nums[3]++;
+                            break;
+                        case(2):
+                            nums[4]++;
+                            break;
+                    }
+                }
+            }catch(IndexOutOfBoundsException e){
+                System.out.println("Error: No valid autos found");
+            }
+            //System.out.println("Ran");
+            return nums;
         }
 
 

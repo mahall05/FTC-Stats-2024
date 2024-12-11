@@ -121,6 +121,15 @@ public class TeamMember {
             Utilities.getCellFromRow(row, 2).setCellValue(matches.get(primaryType).get(i).getSpecialist());
             Utilities.getCellFromRow(row, 3).setCellValue(matches.get(primaryType).get(i).getHuman());
             Utilities.getCellFromRow(row, 4).setCellValue(matches.get(primaryType).get(i).getCoach());
+
+            for(int j = 0; j < 14; j++){
+                if(matches.get(primaryType).get(i).getSingleData(j)<0){
+                    row.createCell(j+5);
+                }else{
+                    row.createCell(j+5).setCellValue(matches.get(primaryType).get(i).getSingleData(j));
+                }
+            }
+            /*
             Utilities.getCellFromRow(row, 5).setCellValue(matches.get(primaryType).get(i).getNet());
             Utilities.getCellFromRow(row, 6).setCellValue(matches.get(primaryType).get(i).getLowBasket());
             Utilities.getCellFromRow(row, 7).setCellValue(matches.get(primaryType).get(i).getHighBasket());
@@ -135,6 +144,7 @@ public class TeamMember {
             Utilities.getCellFromRow(row, 16).setCellValue(matches.get(primaryType).get(i).getAutoSpecimensScored());
             Utilities.getCellFromRow(row, 17).setCellValue(matches.get(primaryType).get(i).getTeleopSamplesScored());
             Utilities.getCellFromRow(row, 18).setCellValue(matches.get(primaryType).get(i).getTeleopSpecimensScored());
+            */
             Utilities.getCellFromRow(row, 19).setCellValue(matches.get(primaryType).get(i).getAutoRan());
             Utilities.getCellFromRow(row, 20).setCellValue(matches.get(primaryType).get(i).getTeleopStrategy());
             Utilities.getCellFromRow(row, 21).setCellValue(matches.get(primaryType).get(i).getMatchType());
