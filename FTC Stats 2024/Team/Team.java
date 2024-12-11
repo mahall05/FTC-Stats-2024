@@ -108,9 +108,10 @@ public class Team extends Group{
 
         for(int i = 0; i < 56; i++){
             Row row = Utilities.getRowFromSheet(Utilities.getSheetFromWorkbook(wb, "Data"), i+2);
-            row.createCell(25).setCellValue(i);
+            
 
             if(i< (int) (((new Date()).getTime()-Team.firstDay.getTime()) / (24.0 * 60.0 * 60.0 * 1000.0) + 1)){
+                row.createCell(25).setCellValue(i);
                 ArrayList<Entry> sampleList = new ArrayList<Entry>();
                 ArrayList<Entry> specimenList = new ArrayList<Entry>();
 
