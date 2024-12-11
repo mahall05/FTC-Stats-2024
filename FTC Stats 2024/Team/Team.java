@@ -54,6 +54,7 @@ public class Team extends Group{
         humans.add(find(members, "Maddie"));
         humans.add(find(members, "Zoe"));
         humans.add(find(members, "Caleb"));
+        humans.add(find(members, "Emily"));
 
         this.drivers = new Group(drivers.toArray(), wb);
         this.specialists = new Group(specialists.toArray(), wb);

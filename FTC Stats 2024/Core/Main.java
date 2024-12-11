@@ -30,7 +30,8 @@ public class Main{
                                         new TeamMember("Maddie", workbook, 2),
                                         new TeamMember("Caleb", workbook, 2),
                                         new TeamMember("Matt", workbook, 2),
-                                        new TeamMember("Alan", workbook, 2)});
+                                        new TeamMember("Alan", workbook, 2),
+                                        new TeamMember("Emily", workbook, 3)});
     
         Utilities.writeWorkbookToSpreadsheet(Settings.fileName, workbook);
     }
