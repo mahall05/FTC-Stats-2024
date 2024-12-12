@@ -1,17 +1,8 @@
-How much of the variation in score can be explained by their contribution?
-
-
-
 Ctrl-Alt-f9 forces excel reload
 
-Calculate how much the drive coaches and partners affect their scores
 
-Make matches worth less if they are driven with a coach
+How much of the variation in score can be explained by their contribution?
 
 Seperate teleop scores for specimen and samples so we get to compare
-
-Net pieces count for samples
-
-Somehow some teleop pieces scored have negative calculated values
 
 Compare autos
