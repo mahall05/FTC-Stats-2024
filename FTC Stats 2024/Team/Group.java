@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import Core.Utilities;
@@ -14,6 +15,7 @@ public class Group{
     protected ArrayList<Data.Entry> entries;
     protected Data data;
     protected XSSFWorkbook wb;
+    private int type;
 
     // Net, Low Basket, High Basket, Low Chamber, High Chamber, Endgame, Auto Points, Total Points, Teleop Points, Pieces Scored, Auto Samples, Auto Specimens, Teleop Samples, Teleop Specimens
 
@@ -36,7 +38,8 @@ public class Group{
     protected double[] teleopSpecimensScored;
     */
     
-    public Group(Object[] members, XSSFWorkbook wb){
+    public Group(Object[] members, XSSFWorkbook wb, int type){
+        this.type=type;
         this.members = new TeamMember[members.length];
         this.wb=wb;
         data = new Data(wb);
@@ -67,7 +70,7 @@ public class Group{
         dataArray[dataArray.length-1] = new double[] {Data.calcMean(specimenMatches, Data.Entry::getEntryTeleopSpecimensScored), Data.calcStdDev(specimenMatches, Data.Entry::getEntryTeleopSpecimensScored)};
     }
 
-    public void calcComparisonData(String typeLabel, int type){
+    public void calcComparisonData(String typeLabel){
         Map<Integer, ArrayList<Double>> dataMap = new HashMap<Integer, ArrayList<Double>>();
 
         for(int i = 0; i < dataArray.length; i++){
@@ -98,4 +101,52 @@ public class Group{
         }
         return names;
     }
+
+    public void runCombos(Group comboGroup, int column, TeamMember... exclusions){ // Start at 39, row 3
+        for(int i = 0; i < members.length; i++){
+            boolean breaker=false;
+            for(int j = 0; j < exclusions.length; j++){
+                if(members[i].equals(exclusions[j])){
+                    breaker=true;
+                }
+            }
+            if(breaker){
+                continue;
+            }
+
+            for(int j = 0; j < dataArray.length; j++){
+                ArrayList<Double> dataList = new ArrayList<Double>();
+
+                for(int k = 0; k < comboGroup.size(); k++){
+                    double memberAvg = members[i].getData()[j][type][0];
+                    double memberStdDev = members[i].getData()[j][type][1];
+
+                    double comboMemberAvg = members[i].selectiveAvg(comboGroup.getMembers()[k], comboGroup.getType(), j);
+                    
+                    dataList.add((comboMemberAvg-memberAvg)/memberStdDev);
+                    dataList.add(comboMemberAvg-memberAvg);
+                }
+                Row row = Utilities.getRowFromSheet(Utilities.getSheetFromWorkbook(wb, members[i].getName()), 3+j);
+                for(int k = 0; k < dataList.size(); k++){
+                    Utilities.getCellFromRow(row, column+k).setCellValue(dataList.get(k));
+                }
+            }
+        }
+    }
+
+    public int size(){
+        return members.length;
+    }
+    public int getType(){
+        return type;
+    }
+    public TeamMember find(String name){
+        for(TeamMember m : members){
+            if(m.getName().equals(name)){
+                return m;
+            }
+        }
+        return null;
+    }
+
 }

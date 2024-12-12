@@ -13,3 +13,5 @@ Seperate teleop scores for specimen and samples so we get to compare
 Net pieces count for samples
 
 Somehow some teleop pieces scored have negative calculated values
+
+Compare autos

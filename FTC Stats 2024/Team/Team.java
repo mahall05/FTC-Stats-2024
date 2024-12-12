@@ -19,15 +19,17 @@ public class Team extends Group{
     private Group specialists;
     private Group coaches;
     private Group humans;
+    private ArrayList<DrivePair> drivePairs; // TODO
     public static Date firstDay = Utilities.getCellFromRow(Utilities.getRowFromSheet(Utilities.getSheetFromWorkbook(Utilities.getWorkbookFromFile(Settings.fileName), "Data"), 2), 0).getDateCellValue();
 
     public Team(XSSFWorkbook wb, TeamMember[] members){
-        super(members, wb);
+        super(members, wb, 10);
 
         ArrayList<TeamMember> drivers = new ArrayList<TeamMember>();
         ArrayList<TeamMember> specialists = new ArrayList<TeamMember>();
         ArrayList<TeamMember> coaches = new ArrayList<TeamMember>();
         ArrayList<TeamMember> humans = new ArrayList<TeamMember>();
+        drivePairs = new ArrayList<DrivePair>();
 
         drivers.add(find(members, "Cas"));
         drivers.add(find(members, "Ben"));
@@ -56,10 +58,25 @@ public class Team extends Group{
         humans.add(find(members, "Caleb"));
         humans.add(find(members, "Emily"));
 
-        this.drivers = new Group(drivers.toArray(), wb);
-        this.specialists = new Group(specialists.toArray(), wb);
-        this.coaches = new Group(coaches.toArray(), wb);
-        this.humans = new Group(humans.toArray(), wb);
+        for(TeamMember d : drivers){
+            for(TeamMember s : specialists){
+                if(!d.getName().equals("Matt")&&!d.getName().equals("Maddie")&&!s.getName().equals("Caleb")){
+                    drivePairs.add(new DrivePair(d, s, new TeamMember[] {coaches.get(0), coaches.get(1), coaches.get(2)}, entries, wb));
+                }
+            }
+        }
+
+        for(int i = 0; i < drivePairs.size(); i++){
+            drivePairs.get(i).calcData(i+1, dataArray);
+        }
+        for(int i = 0; i < drivePairs.size(); i++){
+            drivePairs.get(i).calcDataWithCoaches(i*3+19, dataArray);
+        }
+
+        this.drivers = new Group(drivers.toArray(), wb, 0);
+        this.specialists = new Group(specialists.toArray(), wb, 1);
+        this.coaches = new Group(coaches.toArray(), wb, 2);
+        this.humans = new Group(humans.toArray(), wb, 3);
 
         for(Data.Entry e : entries){
             if(e.getDriver()!=null){
@@ -143,10 +160,19 @@ public class Team extends Group{
             }
         }
 
-        this.drivers.calcComparisonData("Drivers", 0);
-        this.specialists.calcComparisonData("Specialists", 1);
-        this.coaches.calcComparisonData("Coaches", 2);
-        this.humans.calcComparisonData("Human Players", 3);
+        this.drivers.calcComparisonData("Drivers");
+        this.specialists.calcComparisonData("Specialists");
+        this.coaches.calcComparisonData("Coaches");
+        this.humans.calcComparisonData("Human Players");
+
+        this.drivers.runCombos(this.specialists, 40, this.drivers.find("Matt"), this.drivers.find("Maddie"));
+        this.drivers.runCombos(this.coaches, 40+this.specialists.size()*2, this.drivers.find("Matt"), this.drivers.find("Maddie"));
+
+        this.specialists.runCombos(this.drivers, 40, this.specialists.find("Caleb"));
+        this.specialists.runCombos(this.coaches, 40+this.drivers.size()*2, this.specialists.find("Caleb"));
+
+        this.coaches.runCombos(this.drivers, 40);
+        this.coaches.runCombos(this.specialists, 40+this.drivers.size()*2);
     }
 
     public TeamMember find(TeamMember[] list, String name){

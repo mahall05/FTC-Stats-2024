@@ -204,4 +204,38 @@ public class TeamMember {
 
         Utilities.writeDatamapToSheet(3, Utilities.getSheetFromWorkbook(wb, name), dataMap);
     }
+
+    public double selectiveAvg(TeamMember member, int type, int data){
+        ArrayList<Entry> comboMatches = new ArrayList<Entry>();
+
+        for(Entry e : matches.get(primaryType)){
+            if(isMatchWith(e, member, type)){
+                if(data==12||data==13){
+                    if(e.getTeleopStrategy()!=null&&data==12&&e.getTeleopStrategy().equals("Samples")){
+                        comboMatches.add(e);
+                    }else if(e.getTeleopStrategy()!=null&&data==13&&e.getTeleopStrategy().equals("Specimens")){
+                        comboMatches.add(e);
+                    }
+                }else{
+                    comboMatches.add(e);
+                }
+            }
+        }
+        return Data.calcMean(comboMatches, Entry.getData(data));// TODO
+    }
+
+    public boolean isMatchWith(Entry e, TeamMember member, int type){
+        switch(type){
+            case(0):
+                return e.getDriver().equals(member.getName());
+            case(1):
+                return e.getSpecialist().equals(member.getName());
+            case(2):
+                return e.getCoach().equals(member.getName());
+            case(3):
+                return e.getHuman().equals(member.getName());
+            default:
+                return false;
+        }
+    }
 }
