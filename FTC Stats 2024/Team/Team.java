@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import Core.Settings;
@@ -173,6 +174,24 @@ public class Team extends Group{
 
         this.coaches.runCombos(this.drivers, 40);
         this.coaches.runCombos(this.specialists, 40+this.drivers.size()*2);
+
+        XSSFSheet autoSheet = Utilities.getSheetFromWorkbook(wb, "Autos");
+        int[][] autos = {{0, 4, 0, 0, 0}, {1, 3, 0, 0, 0}, {3, 0, 0, 0, 0}, {0,0,0,0,0}, {0,0,0,0,0}, {4, 0, 0, 0, 0}};
+        int failed = 0;
+        for(int i = 0; i < entries.size(); i++){
+            int autoRan = entries.get(i).getAutoRan();
+            if(autoRan > 0){
+                int[] piecesScored = entries.get(i).getAutoPieces();
+                int[] attemptedAuto = autos[autoRan-1];
+                Row row = Utilities.getRowFromSheet(autoSheet, 4+i-failed);
+                for(int j = 0; j < piecesScored.length; j++){
+                    Utilities.getCellFromRow(row, 2+j*2).setCellValue(attemptedAuto[j]);
+                    Utilities.getCellFromRow(row, 3+j*2).setCellValue(piecesScored[j]);
+                }
+            }else{
+                failed++;
+            }
+        }
     }
 
     public TeamMember find(TeamMember[] list, String name){

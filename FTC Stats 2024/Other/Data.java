@@ -299,6 +299,8 @@ public class Data {
         private String teleopStrategy;
         private String matchType;
 
+        private int[] autoPieces;
+
         public boolean wasCoachDriving(){
             boolean coachDriving = false;
             if(getDriver().equals("Matt")||getDriver().equals("Caleb")||getDriver().equals("Maddie")
@@ -392,7 +394,7 @@ public class Data {
                     points-=3;
                 }
 
-                int[] autoPieces = minimize(points);
+                this.autoPieces = minimize(points);
 
                 autoSamplesScored = autoPieces[1]+autoPieces[3]+autoPieces[4];
                 autoSpecimensScored = autoPieces[0]+autoPieces[2];
@@ -720,6 +722,7 @@ public class Data {
         public int getAutoRan(){return autoRan;}
         public String getTeleopStrategy(){return teleopStrategy;}
         public String getMatchType(){return matchType;}
+        public int[] getAutoPieces(){return autoPieces;}
 
         public String toString(){
             return getDate() + " - " + getDriver() + " - " + getSpecialist() + " - " + getHuman() + " - " + getCoach() + " - " + getNet() + " - " + getLowBasket() + " - " + getHighBasket() + " - " + getLowChamber() + " - " + getHighChamber() + " - " + getEndgamePoints() + " - " + getAutoPoints() + " - " + getTotalPoints() + " - " + getPiecesScored();
